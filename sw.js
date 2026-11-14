@@ -1,7 +1,7 @@
 // Lichtbak service worker: laat de app offline werken en ontvangt gedeelde foto's.
-const VERSION = 'lichtbak-v1';
-const SHELL = ['./', 'index.html', 'css/app.css', 'js/app.js', 'js/engine.js', 'js/store.js', 'js/sample.js',
-  'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-512.png', 'icons/apple-touch-icon.png'];
+const VERSION = 'lichtbak-v2';
+const SHELL = ['./', 'index.html', 'app.css', 'app.js', 'engine.js', 'store.js', 'sample.js',
+  'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'maskable-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));

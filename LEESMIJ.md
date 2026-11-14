@@ -7,7 +7,7 @@ Foto-editor voor je telefoon en pc, ook offline. Je foto's blijven op je eigen a
 1. Maak een gratis account op github.com (of log in).
 2. Klik rechtsboven op **+** → **New repository**. Naam: `lichtbak`. Kies **Public**. Klik **Create repository**.
 3. Klik op de link **uploading an existing file**.
-4. Pak de zip uit en sleep **de inhoud** van de map (index.html, sw.js, manifest.webmanifest, .nojekyll en de mappen css, js en icons) in het uploadvak. Klik **Commit changes**.
+4. Pak de zip uit en sleep **de inhoud** van de map (alle losse bestanden, er zitten geen mappen in) in het uploadvak. Klik **Commit changes**.
 5. Ga naar **Settings** → **Pages**. Bij *Source* kies je **Deploy from a branch**, dan **main** en **/ (root)**. Klik **Save**.
 6. Na 1 à 2 minuten staat de app op: `https://JOUW-GEBRUIKERSNAAM.github.io/lichtbak/`
 
