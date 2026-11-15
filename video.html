@@ -67,6 +67,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 .panel{border-left:1px solid var(--line);background:var(--surface);overflow-y:auto;min-height:0;display:flex;flex-direction:column}
 .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding-block:12px 0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));position:sticky;top:0;background:var(--surface);z-index:2;border-bottom:1px solid var(--line)}
+#vtabs{grid-template-columns:repeat(5,minmax(0,1fr));gap:0}
+#vtabs .tab{font-size:13px;padding-inline:0;white-space:nowrap}
 .tab{border:0;background:none;padding:9px 2px 11px;cursor:pointer;color:var(--muted);font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px}
 .tab[aria-selected=true]{color:var(--fg);border-bottom-color:var(--accent);font-weight:600}
 .sec{padding-block:16px 24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
@@ -92,6 +94,15 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;bac
 .fbtn[aria-pressed=true] canvas{outline-color:var(--accent)}
 
 .chips{display:flex;flex-wrap:wrap;gap:6px}
+.trgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.trtile{border:0;background:none;padding:0;cursor:pointer;display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:11.5px;font-weight:500;text-align:left;line-height:1.25}
+.trtile canvas{width:100%;aspect-ratio:16/9;border-radius:7px;display:block;outline:2px solid transparent;outline-offset:2px;background:#000}
+.trtile[aria-pressed=true]{color:var(--fg);font-weight:600}
+.trtile[aria-pressed=true] canvas{outline-color:var(--accent)}
+.trtile:hover canvas{outline-color:var(--line)}
+.trtile[aria-pressed=true]:hover canvas{outline-color:var(--accent)}
+.fxhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.fxhead .glabel{margin:0}
 .chip{height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);cursor:pointer;font-size:13px;font-weight:500;font-variant-numeric:tabular-nums}
 .chip[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .row{display:flex;flex-wrap:wrap;gap:6px}
@@ -384,6 +395,7 @@ body.noscroll{overflow:hidden}
       <nav class="tabs" role="tablist" id="vtabs">
         <button class="tab" role="tab" data-vt="media" aria-selected="true">Media</button>
         <button class="tab" role="tab" data-vt="clip" aria-selected="false">Clip</button>
+        <button class="tab" role="tab" data-vt="fx" aria-selected="false">Effecten</button>
         <button class="tab" role="tab" data-vt="tpl" aria-selected="false">Sjablonen</button>
         <button class="tab" role="tab" data-vt="project" aria-selected="false">Project</button>
       </nav>
@@ -394,6 +406,7 @@ body.noscroll{overflow:hidden}
         <p class="hint" id="vBinHint">Klik op <b>+</b> om een bestand achteraan de tijdlijn te zetten, of sleep het naar een spoor.</p>
       </section>
       <section class="sec" data-vp="clip" id="vclip" hidden></section>
+      <section class="sec" data-vp="fx" id="vfx" hidden></section>
       <section class="sec" data-vp="tpl" id="vtpl" hidden></section>
       <section class="sec" data-vp="project" hidden>
         <div class="field"><label for="vName">Projectnaam</label><input type="text" id="vName"></div>
@@ -1101,7 +1114,9 @@ function newClip(type, track, start, dur, mediaId){
 }
 /* vult ontbrekende velden aan (ook voor projecten uit een eerdere versie) */
 function normalize(c){
-  c.fx = Object.assign({bright: 0, contrast: 0, sat: 0, warmth: 0, vignette: 0, look: 'none'}, c.fx || {});
+  c.fx = Object.assign({bright: 0, contrast: 0, sat: 0, warmth: 0, vignette: 0, look: 'none', bars: 'none', grain: 0, blur: 0}, c.fx || {});
+  c.trIn = Object.assign({type: 'fade', dir: 'l', ease: 'smooth', soft: 35, bg: 'clear'}, c.trIn || {});
+  c.trOut = Object.assign({type: 'fade', dir: 'l', ease: 'smooth', soft: 35, bg: 'clear'}, c.trOut || {});
   c.tf = Object.assign({scale: 100, x: 0, y: 0, fit: 'cover', kb: 0, rot: 0, flipH: false, flipV: false, crop: {l: 0, r: 0, t: 0, b: 0}, box: null, opacity: 100, blend: 'source-over', blurBg: false}, c.tf || {});
   c.tf.crop = Object.assign({l: 0, r: 0, t: 0, b: 0}, c.tf.crop || {});
   if(c.type === 'text'){
@@ -1344,10 +1359,97 @@ function dropPlayer(id){
 function cleanupPool(){ for(const [id, p] of pool){ const c = byId(id); if(!c || c.media !== p.mediaId) dropPlayer(id); } }
 function fadeAlpha(c, at = t){
   const l = at - c.start; let a = 1;
-  if(c.fadeIn > 0) a = Math.min(a, l / c.fadeIn);
-  if(c.fadeOut > 0) a = Math.min(a, (c.dur - l) / c.fadeOut);
+  if(c.fadeIn > 0) a = Math.min(a, EASE[(c.trIn || {}).ease || 'smooth'](clamp(l / c.fadeIn, 0, 1)));
+  if(c.fadeOut > 0) a = Math.min(a, EASE[(c.trOut || {}).ease || 'smooth'](clamp((c.dur - l) / c.fadeOut, 0, 1)));
   return clamp(a, 0, 1);
 }
+/* ---------- overgangen ---------- */
+const EASE = {
+  linear: p => p,
+  smooth: p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2,
+  in: p => p * p * p,
+  out: p => 1 - Math.pow(1 - p, 3),
+};
+const EASES = [['smooth', 'Vloeiend'], ['linear', 'Gelijkmatig'], ['out', 'Snel, zacht uitlopend'], ['in', 'Zacht, snel uitlopend']];
+/* d = voortgang langs de bewegingsrichting (0 = waar de rand begint) */
+const TRANS = [
+  {id: 'none', name: 'Harde knip'},
+  {id: 'fade', name: 'Vervagen'},
+  {id: 'e2c', name: 'Van rand naar midden', shape: 'radial', d: r => 1 - r},
+  {id: 'c2e', name: 'Van midden naar rand', shape: 'radial', d: r => r},
+  {id: 'wipe', name: 'Vegen', shape: 'linear', dirs: true},
+  {id: 'barnO', name: 'Gordijn openen', shape: 'barn', d: u => u, axis: true},
+  {id: 'barnC', name: 'Gordijn sluiten', shape: 'barn', d: u => 1 - u, axis: true},
+  {id: 'slide', name: 'Schuiven', dirs: true},
+  {id: 'zoom', name: 'Zachte zoom'},
+  {id: 'focus', name: 'Scherpstellen'},
+];
+const TDIRS = [['l', 'Van links'], ['r', 'Van rechts'], ['t', 'Van boven'], ['b', 'Van onder']];
+const TAXES = [['h', 'Horizontaal'], ['v', 'Verticaal']];
+const TBG = [['clear', 'Laag eronder'], ['#000000', 'Zwart'], ['#ffffff', 'Wit']];
+/* bepaalt welke overgang op dit moment speelt; e = 0 onzichtbaar … 1 volledig zichtbaar */
+function transState(c, at){
+  const l = at - c.start;
+  const pi = c.fadeIn > 0 ? clamp(l / c.fadeIn, 0, 1) : 1, po = c.fadeOut > 0 ? clamp((c.dur - l) / c.fadeOut, 0, 1) : 1;
+  if(pi >= 1 && po >= 1) return null;
+  const slot = pi <= po ? 'in' : 'out', tr = slot === 'in' ? c.trIn : c.trOut, p = slot === 'in' ? pi : po;
+  if(!tr || tr.type === 'none') return null;
+  return {slot, tr, e: EASE[tr.ease || 'smooth'](p), def: TRANS.find(x => x.id === tr.type) || TRANS[1]};
+}
+const smooth01 = x => { x = clamp(x, 0, 1); return x * x * (3 - 2 * x); };
+let maskC = null, offC = null, bgC = null;
+function scratch(ref, W, H){ if(!ref || ref.width !== W || ref.height !== H){ ref = document.createElement('canvas'); ref.width = W; ref.height = H; } const x = ref.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.globalAlpha = 1; x.globalCompositeOperation = 'source-over'; x.filter = 'none'; x.clearRect(0, 0, W, H); return ref; }
+/* tekent het alfamasker van een vorm-overgang in canvas M (gebied R in pixels) */
+function buildMask(M, R, st){
+  const x = M.getContext('2d'), {tr, def, slot, e} = st, s = .02 + (tr.soft ?? 35) / 100 * .6, N = 48;
+  const alphaAt = d => { const u = slot === 'in' ? d : 1 - d; return smooth01((e * (1 + s) - u) / s); };
+  let g;
+  if(def.shape === 'radial'){
+    x.translate(R.x + R.w / 2, R.y + R.h / 2); x.scale(R.w / 2 * Math.SQRT2, R.h / 2 * Math.SQRT2);
+    g = x.createRadialGradient(0, 0, 0, 0, 0, 1);
+    for(let i = 0; i <= N; i++){ const r = i / N; g.addColorStop(r, `rgba(0,0,0,${alphaAt(def.d(r)).toFixed(4)})`); }
+    x.fillStyle = g; x.fillRect(-2, -2, 4, 4); x.setTransform(1, 0, 0, 1, 0, 0); return;
+  }
+  const vert = def.shape === 'barn' ? tr.dir === 'v' : (tr.dir === 't' || tr.dir === 'b');
+  g = vert ? x.createLinearGradient(0, R.y, 0, R.y + R.h) : x.createLinearGradient(R.x, 0, R.x + R.w, 0);
+  for(let i = 0; i <= N; i++){
+    const q = i / N; let d;
+    if(def.shape === 'barn') d = def.d(Math.abs(q - .5) * 2);
+    else d = (tr.dir === 'r' || tr.dir === 'b') ? 1 - q : q;
+    g.addColorStop(q, `rgba(0,0,0,${alphaAt(d).toFixed(4)})`);
+  }
+  x.fillStyle = g; x.fillRect(R.x, R.y, R.w, R.h);
+}
+function regionOf(c, W, H){ const B = c.tf && c.tf.box || {x: 0, y: 0, w: 1, h: 1}; return {x: B.x * W, y: B.y * H, w: B.w * W, h: B.h * H}; }
+/* tekent een clip met de actieve overgang */
+function drawVisual(c, W, H, at){
+  const st = transState(c, at);
+  if(!st) return drawVisualRaw(c, W, H, at, {alpha: 1});
+  const {tr, def, e, slot} = st, R = regionOf(c, W, H);
+  const dirv = {l: [1, 0], r: [-1, 0], t: [0, 1], b: [0, -1]}[tr.dir] || [1, 0];
+  if(def.id === 'fade'){
+    if(tr.bg === 'clear') return drawVisualRaw(c, W, H, at, {alpha: e});
+    drawVisualRaw(c, W, H, at, {alpha: 1});
+    cx.save(); cx.setTransform(1, 0, 0, 1, 0, 0); cx.globalAlpha = 1 - e; cx.fillStyle = tr.bg; cx.fillRect(R.x, R.y, R.w, R.h); cx.restore(); return;
+  }
+  if(def.id === 'slide'){ const k = (1 - e) * (slot === 'in' ? -1 : 1); return drawVisualRaw(c, W, H, at, {alpha: 1, dx: dirv[0] * k * R.w, dy: dirv[1] * k * R.h, clipR: R}); }
+  if(def.id === 'zoom') return drawVisualRaw(c, W, H, at, {alpha: e, scale: 1 + (1 - e) * (slot === 'in' ? .06 : -.04)});
+  if(def.id === 'focus') return drawVisualRaw(c, W, H, at, {alpha: Math.min(1, e * 1.4), blur: (1 - e) * Math.min(W, H) * .025});
+  // vorm-overgang: clip apart tekenen en maskeren
+  const real = cx; offC = scratch(offC, W, H); cx = offC.getContext('2d');
+  try { drawVisualRaw(c, W, H, at, {alpha: 1, noBlend: true}); } finally { cx = real; }
+  maskC = scratch(maskC, W, H); buildMask(maskC, R, st);
+  const ox = offC.getContext('2d'); ox.globalCompositeOperation = 'destination-in'; ox.drawImage(maskC, 0, 0); ox.globalCompositeOperation = 'source-over';
+  cx.save(); cx.setTransform(1, 0, 0, 1, 0, 0); cx.globalAlpha = 1; cx.filter = 'none';
+  if(tr.bg !== 'clear'){
+    bgC = scratch(bgC, W, H); const bx = bgC.getContext('2d'); bx.fillStyle = tr.bg; bx.fillRect(R.x, R.y, R.w, R.h);
+    bx.globalCompositeOperation = 'destination-out'; bx.drawImage(maskC, 0, 0); bx.globalCompositeOperation = 'source-over';
+    cx.drawImage(bgC, 0, 0);
+  }
+  cx.globalCompositeOperation = c.tf.blend || 'source-over'; cx.drawImage(offC, 0, 0); cx.restore();
+}
+let grainC = null;
+function grainTile(){ if(!grainC){ grainC = document.createElement('canvas'); grainC.width = grainC.height = 256; } const x = grainC.getContext('2d'), d = x.createImageData(256, 256); for(let i = 0; i < d.data.length; i += 4){ const v = 128 + (Math.random() - .5) * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; } x.putImageData(d, 0, 0); return grainC; }
 function setVol(p, v){
   if(p.gain){ try{ p.gain.gain.setTargetAtTime(v, AC.currentTime, .015); }catch(_){ p.gain.gain.value = v; } }
   else p.el.volume = clamp(v, 0, 1);
@@ -1377,7 +1479,7 @@ function syncMedia(play){
 }
 
 /* ---------- tekenen ---------- */
-const cv = $('#vcanvas'), cx = cv.getContext('2d');
+const cv = $('#vcanvas'); let cx = cv.getContext('2d');
 let drawBoxes = [];
 const projDims = () => FMTS[P.fmt].slice(0, 2);
 function activeOn(tr, at){ return P.clips.filter(c => c.track === tr && at >= c.start - EPS && at < end(c)).sort((a, b) => a.start - b.start); }
@@ -1409,7 +1511,7 @@ function draw(){
     }
   }
 }
-function drawVisual(c, W, H, at){
+function drawVisualRaw(c, W, H, at, T){
   const m = media.get(c.media); if(!m) return;
   let src, sw, sh;
   if(c.type === 'image'){ src = m.img; sw = m.w; sh = m.h; if(!src) return; }
@@ -1420,24 +1522,25 @@ function drawVisual(c, W, H, at){
   const rad = (tf.rot || 0) * Math.PI / 180, co = Math.abs(Math.cos(rad)), si = Math.abs(Math.sin(rad));
   const bw = qw * co + qh * si, bh = qw * si + qh * co;
   const s0 = tf.fit === 'contain' ? Math.min(RW / bw, RH / bh) : Math.max(RW / bw, RH / bh);
-  const s = s0 * tf.scale / 100 * (1 + (tf.kb || 0) / 100 * pr);
-  const ccx = RX + RW / 2 + tf.x / 100 * W, ccy = RY + RH / 2 + tf.y / 100 * H;
-  const a = fadeAlpha(c, at) * (tf.opacity ?? 100) / 100;
+  const s = s0 * tf.scale / 100 * (1 + (tf.kb || 0) / 100 * pr) * (T.scale || 1);
+  const ccx = RX + RW / 2 + tf.x / 100 * W + (T.dx || 0), ccy = RY + RH / 2 + tf.y / 100 * H + (T.dy || 0);
+  const a = T.alpha * (tf.opacity ?? 100) / 100;
   const full = !tf.box;
   drawBoxes.push({id: c.id,
     x0: Math.max(RX, ccx - bw * s / 2) / W, y0: Math.max(RY, ccy - bh * s / 2) / H,
     x1: Math.min(RX + RW, ccx + bw * s / 2) / W, y1: Math.min(RY + RH, ccy + bh * s / 2) / H});
   if(a <= 0) return;
   cx.save();
-  if(!full){ cx.beginPath(); cx.rect(RX, RY, RW, RH); cx.clip(); }
+  if(!full || T.clipR){ cx.beginPath(); cx.rect(RX, RY, RW, RH); cx.clip(); }
   cx.globalAlpha = a;
-  const f = filterStr(c.fx);
+  let f = filterStr(c.fx);
+  const bl = (c.fx.blur || 0) / 100 * Math.min(W, H) * .02 + (T.blur || 0); if(bl > .3) f = (f ? f + ' ' : '') + `blur(${bl.toFixed(1)}px)`;
   if(tf.blurBg){
     const sb = Math.max(RW / qw, RH / qh) * 1.08;
     cx.filter = `blur(${Math.round(Math.min(W, H) / 28)}px) brightness(.7)` + (f ? ' ' + f : '');
     try{ cx.drawImage(src, qx, qy, qw, qh, RX + RW / 2 - qw * sb / 2, RY + RH / 2 - qh * sb / 2, qw * sb, qh * sb); }catch(_){}
   }
-  cx.globalCompositeOperation = tf.blend || 'source-over';
+  cx.globalCompositeOperation = T.noBlend ? 'source-over' : (tf.blend || 'source-over');
   cx.filter = f || 'none';
   cx.translate(ccx, ccy); cx.rotate(rad); cx.scale(tf.flipH ? -1 : 1, tf.flipV ? -1 : 1);
   const dw = qw * s, dh = qh * s;
@@ -1459,6 +1562,12 @@ function drawVisual(c, W, H, at){
     }
   }
   cx.restore();
+  if(c.fx.grain > 0 || (c.fx.bars && c.fx.bars !== 'none')){
+    cx.save(); cx.setTransform(1, 0, 0, 1, 0, 0); cx.beginPath(); cx.rect(RX, RY, RW, RH); cx.clip();
+    if(c.fx.grain > 0){ cx.globalAlpha = a * c.fx.grain / 100 * .22; cx.globalCompositeOperation = 'overlay'; cx.fillStyle = cx.createPattern(grainTile(), 'repeat'); const k = Math.max(1, Math.min(W, H) / 1080); cx.scale(k, k); cx.fillRect(0, 0, W / k, H / k); cx.setTransform(1, 0, 0, 1, 0, 0); cx.globalCompositeOperation = 'source-over'; }
+    if(c.fx.bars && c.fx.bars !== 'none'){ const ratio = +c.fx.bars, bh = Math.max(0, (RH - RW / ratio) / 2); if(bh > 0){ cx.globalAlpha = a; cx.fillStyle = '#000'; cx.fillRect(RX, RY, RW, bh); cx.fillRect(RX, RY + RH - bh, RW, bh); } }
+    cx.restore();
+  }
 }
 function wrapLines(text, maxW){
   const out = [];
@@ -1536,6 +1645,7 @@ function loop(now){
     const dt = Math.min(.1, Math.max(0, (now - last) / 1000)); last = now;
     const stalled = syncMedia(true);
     if(!stalled) t += dt;
+    if(stopAt !== null && t >= stopAt){ t = stopAt; stopAt = null; pause(); }
     const T = total();
     if(t >= T){ t = T; if(exporting) return finishExport(); pause(); }
   } else syncMedia(false);
@@ -1549,8 +1659,9 @@ function play(){
   if(t >= total() - .02) t = 0;
   playing = true; last = performance.now(); setPlayIcon(); requestDraw();
 }
+let stopAt = null;
 function pause(){
-  playing = false; pool.forEach(p => { if(!p.el.paused) p.el.pause(); }); setPlayIcon(); requestDraw();
+  stopAt = null; playing = false; pool.forEach(p => { if(!p.el.paused) p.el.pause(); }); setPlayIcon(); requestDraw();
 }
 function toggle(){ playing ? pause() : play(); }
 function seek(v){ t = clamp(v, 0, total()); requestDraw(); }
@@ -1926,6 +2037,7 @@ $('#vNext').onclick = () => { pause(); seek(Math.round(t * FPS + 1) / FPS); };
 function setTab(k){
   $$('#vtabs .tab').forEach(b => b.setAttribute('aria-selected', b.dataset.vt === k));
   $$('[data-vp]').forEach(p => p.hidden = p.dataset.vp !== k);
+  if(k === 'fx') renderFx();
 }
 $$('#vtabs .tab').forEach(b => b.onclick = () => setTab(b.dataset.vt));
 
@@ -2007,6 +2119,7 @@ const sgn = v => (v > 0 ? '+' : '') + Math.round(v);
 const deg = v => sgn(v) + '°';
 function liteTL(){ renderTL(); }
 function renderInspector(){
+  try { renderFx(); } catch(_){}
   const pane = $('#vclip'); pane.innerHTML = '';
   const c = sel && byId(sel);
   if(!c){
@@ -2093,14 +2206,14 @@ function renderInspector(){
       slider('Dekking', () => tf.opacity, v => tf.opacity = v, 0, 100, 1, v => v + '%', {def: 100}),
       el('<span class="glabel" style="margin-top:4px">Overvloeimodus</span>'),
       chips(BLENDS, tf.blend, v => { tf.blend = v; requestDraw(); commit(); })));
-    pane.appendChild(group('Kleur',
+    if(false) pane.appendChild(group('Kleur',
       slider('Helderheid', () => fx.bright, v => fx.bright = v, -100, 100, 1, sgn),
       slider('Contrast', () => fx.contrast, v => fx.contrast = v, -100, 100, 1, sgn),
       slider('Verzadiging', () => fx.sat, v => fx.sat = v, -100, 100, 1, sgn),
       slider('Warmte', () => fx.warmth, v => fx.warmth = v, -100, 100, 1, sgn),
       slider('Vignet', () => fx.vignette, v => fx.vignette = v, -100, 100, 1, sgn),
       btn('Kleur herstellen', () => { Object.assign(fx, {bright: 0, contrast: 0, sat: 0, warmth: 0, vignette: 0, look: 'none'}); commit(); renderInspector(); requestDraw(); }, 'link')));
-    pane.appendChild(group('Look', chips(LOOKS.map(l => [l.id, l.name]), fx.look, v => { fx.look = v; requestDraw(); commit(); })));
+    pane.appendChild(group('Kleur, look & overgangen', el('<p class="hint">Kleur, looks, filmische effecten en overgangen vind je onder <b>Effecten</b>.</p>'), btn('Naar Effecten', () => setTab('fx'))));
   }
 
   if(c.type === 'video'){
@@ -2113,7 +2226,7 @@ function renderInspector(){
     pane.appendChild(group('Duur', slider('Duur', () => c.dur, v => c.dur = v, .5, Math.max(.6, maxD), .1, fmtS, {def: c.type === 'image' ? 4 : 3, live: () => posClipId(c), after})));
   }
 
-  pane.appendChild(group(c.type === 'audio' ? 'In- en uitfaden' : 'Overgang',
+  if(c.type === 'audio') pane.appendChild(group(c.type === 'audio' ? 'In- en uitfaden' : 'Overgang',
     slider(c.type === 'audio' ? 'Infaden' : 'Inloop (vanuit zwart)', () => c.fadeIn, v => c.fadeIn = Math.min(v, c.dur - c.fadeOut), 0, fadeMax(), .1, fmtS, {after}),
     slider(c.type === 'audio' ? 'Uitfaden' : 'Uitloop (naar zwart)', () => c.fadeOut, v => c.fadeOut = Math.min(v, c.dur - c.fadeIn), 0, fadeMax(), .1, fmtS, {after}),
     c.type === 'video' || c.type === 'image' ? el('<p class="hint">Vloeiende overgang tussen twee clips: zet de tweede clip op een laag erboven, een stukje over de eerste heen, en geef hem een inloop.</p>') : null));
@@ -2122,6 +2235,112 @@ function renderInspector(){
     pane.appendChild(group('Geluid', slider('Volume', () => c.vol, v => c.vol = v, 0, 200, 1, v => v + '%', {def: 100, after}),
       c.type === 'video' ? el('<p class="hint">Zet het volume op 0% om het geluid van deze video weg te halen.</p>') : null));
   }
+}
+/* ---------- Effecten-paneel ---------- */
+let trSample = null;
+function trSampleImg(){
+  if(trSample) return trSample;
+  const c = document.createElement('canvas'); c.width = 160; c.height = 90; const x = c.getContext('2d');
+  const g = x.createLinearGradient(0, 0, 0, 90); g.addColorStop(0, '#2a3a6e'); g.addColorStop(.6, '#d9824f'); g.addColorStop(1, '#f3c57a');
+  x.fillStyle = g; x.fillRect(0, 0, 160, 90);
+  x.fillStyle = '#fff1d0'; x.beginPath(); x.arc(104, 56, 11, 0, Math.PI * 2); x.fill();
+  x.fillStyle = '#1d1730'; x.beginPath(); x.moveTo(0, 90); x.lineTo(0, 62); x.lineTo(30, 48); x.lineTo(58, 60); x.lineTo(88, 44); x.lineTo(124, 62); x.lineTo(160, 52); x.lineTo(160, 90); x.fill();
+  return trSample = c;
+}
+function drawTrPreview(cvs, T, tr, slot){
+  const x = cvs.getContext('2d'), W = cvs.width, H = cvs.height, img = trSampleImg(), e = .42;
+  const bg = T.id === 'slide' || T.id === 'zoom' || T.id === 'focus' || tr.bg === 'clear' ? '#101114' : tr.bg;
+  x.setTransform(1, 0, 0, 1, 0, 0); x.globalAlpha = 1; x.filter = 'none'; x.fillStyle = bg; x.fillRect(0, 0, W, H);
+  if(T.id === 'none'){ x.drawImage(img, 0, 0, W, H); x.fillStyle = '#101114'; x.fillRect(0, 0, W / 2, H); x.fillStyle = '#fff'; x.fillRect(W / 2 - 1, 0, 2, H); return; }
+  const dir = T.axis ? (tr.dir === 'v' ? 'v' : 'h') : T.dirs ? ('lrtb'.includes(tr.dir) ? tr.dir : 'l') : tr.dir;
+  const st = {tr: {...tr, type: T.id, dir}, def: T, slot, e};
+  if(T.id === 'fade'){ x.globalAlpha = e; x.drawImage(img, 0, 0, W, H); return; }
+  if(T.id === 'slide'){ const v = {l: [1, 0], r: [-1, 0], t: [0, 1], b: [0, -1]}[dir], k = (1 - e) * (slot === 'in' ? -1 : 1); x.drawImage(img, v[0] * k * W, v[1] * k * H, W, H); return; }
+  if(T.id === 'zoom'){ const sc = 1 + (1 - e) * .12; x.globalAlpha = e; x.drawImage(img, W / 2 - W * sc / 2, H / 2 - H * sc / 2, W * sc, H * sc); return; }
+  if(T.id === 'focus'){ x.filter = 'blur(3px)'; x.globalAlpha = Math.min(1, e * 1.4); x.drawImage(img, 0, 0, W, H); x.filter = 'none'; return; }
+  const o = document.createElement('canvas'); o.width = W; o.height = H; const ox = o.getContext('2d'); ox.drawImage(img, 0, 0, W, H);
+  const m = document.createElement('canvas'); m.width = W; m.height = H; buildMask(m, {x: 0, y: 0, w: W, h: H}, st);
+  ox.globalCompositeOperation = 'destination-in'; ox.drawImage(m, 0, 0); x.drawImage(o, 0, 0);
+}
+function previewTransition(c, slot){
+  pause();
+  const d = slot === 'in' ? c.fadeIn : c.fadeOut;
+  const from = slot === 'in' ? Math.max(0, c.start - .4) : Math.max(0, end(c) - d - .6);
+  const to = slot === 'in' ? c.start + d + .6 : Math.min(total(), end(c) + .4);
+  seek(from); play(); stopAt = to;
+}
+function renderFx(){
+  const pane = $('#vfx'); if(!pane || pane.hidden) return;
+  const scrollTop = pane.scrollTop; pane.innerHTML = '';
+  const c = sel && byId(sel);
+  if(!c){ pane.appendChild(el('<p class="hint">Selecteer een clip op de tijdlijn om overgangen en effecten in te stellen.</p>')); return; }
+  if(c.type === 'audio'){ pane.appendChild(el('<p class="hint">Audio heeft geen beeldeffecten. In- en uitfaden stel je in bij <b>Clip</b>.</p>')); return; }
+  const fadeMax = () => Math.max(.1, Math.min(5, c.dur));
+  const redo = () => { renderTL(); renderFx(); requestDraw(); };
+  const slotUI = (key, durKey, otherKey, title, slot) => {
+    const tr = c[key], g = group(title);
+    if(c.type !== 'text'){
+      const grid = el('<div class="trgrid"></div>');
+      TRANS.forEach(T => {
+        const b = el(`<button class="trtile" aria-pressed="${tr.type === T.id}"><canvas width="160" height="90"></canvas><span></span></button>`);
+        b.querySelector('span').textContent = T.name; drawTrPreview(b.querySelector('canvas'), T, tr, slot);
+        b.onclick = () => {
+          tr.type = T.id;
+          if(T.axis && !['h', 'v'].includes(tr.dir)) tr.dir = 'h';
+          if(T.dirs && !'lrtb'.includes(tr.dir)) tr.dir = 'l';
+          if(T.id === 'none') c[durKey] = 0;
+          else if(c[durKey] < .05) c[durKey] = Math.min(T.id === 'fade' ? 1 : .8, Math.max(.1, c.dur - c[otherKey]) );
+          commit(); redo(); previewTransition(c, slot);
+        };
+        grid.appendChild(b);
+      });
+      g.appendChild(grid);
+    }
+    const def = TRANS.find(x => x.id === tr.type) || TRANS[1];
+    if(tr.type !== 'none'){
+      g.appendChild(slider('Duur', () => c[durKey], v => c[durKey] = Math.min(v, c.dur - c[otherKey]), 0, fadeMax(), .05, fmtS, {after: () => renderTL()}));
+      g.appendChild(el('<span class="glabel">Verloop</span>'));
+      g.appendChild(chips(EASES, tr.ease, v => { tr.ease = v; commit(); requestDraw(); }));
+      if(c.type !== 'text'){
+        if(def.shape) g.appendChild(slider('Zachte rand', () => tr.soft, v => tr.soft = v, 0, 100, 1, v => v + '%', {def: 35, after: () => renderFx()}));
+        if(def.dirs){ g.appendChild(el('<span class="glabel">Richting</span>')); g.appendChild(chips(TDIRS, tr.dir, v => { tr.dir = v; commit(); redo(); })); }
+        if(def.axis){ g.appendChild(el('<span class="glabel">Richting</span>')); g.appendChild(chips(TAXES, tr.dir, v => { tr.dir = v; commit(); redo(); })); }
+        if(def.id === 'fade' || def.shape){ g.appendChild(el('<span class="glabel">Erachter</span>')); g.appendChild(chips(TBG, tr.bg, v => { tr.bg = v; commit(); redo(); })); }
+      }
+      g.appendChild(btn(`${ICON.play}<span>Bekijk ${slot === 'in' ? 'begin' : 'einde'}</span>`, () => previewTransition(c, slot), 'btn'));
+    }
+    return g;
+  };
+  pane.appendChild(slotUI('trIn', 'fadeIn', 'fadeOut', 'Begin van de clip', 'in'));
+  pane.appendChild(slotUI('trOut', 'fadeOut', 'fadeIn', 'Einde van de clip', 'out'));
+  const same = el('<div class="row"></div>');
+  same.append(
+    btn('Einde gelijk aan begin', () => { Object.assign(c.trOut, c.trIn); c.fadeOut = Math.min(c.fadeIn, c.dur - c.fadeIn); commit(); redo(); }),
+    btn('Op alle clips toepassen', () => {
+      let n = 0;
+      const isTxt = c.type === 'text';
+      P.clips.forEach(o => { if(o === c || !isVisual(o) || (o.type === 'text') !== isTxt) return;
+        o.trIn = {...c.trIn}; o.trOut = {...c.trOut}; o.fadeIn = Math.min(c.fadeIn, o.dur / 2); o.fadeOut = Math.min(c.fadeOut, o.dur / 2); n++; });
+      commit(); redo(); toast(n ? `Overgangen gekopieerd naar ${n} andere clip${n === 1 ? '' : 's'}` : 'Er zijn geen andere clips van dit soort.');
+    }));
+  pane.appendChild(group('Overgangen hergebruiken', same, el('<p class="hint">Gebruik in één video steeds dezelfde één of twee overgangen. Dat oogt rustig en professioneel.</p>')));
+  if(c.type === 'text'){ pane.appendChild(el('<p class="hint">De animatie van tekst (zoals omhoog of typen) stel je in bij <b>Clip</b>. Hier bepaal je hoe lang en hoe vloeiend de tekst in- en uitfadet.</p>')); pane.scrollTop = scrollTop; return; }
+  const fx = c.fx;
+  pane.appendChild(group('Kleur',
+    slider('Helderheid', () => fx.bright, v => fx.bright = v, -100, 100, 1, sgn),
+    slider('Contrast', () => fx.contrast, v => fx.contrast = v, -100, 100, 1, sgn),
+    slider('Verzadiging', () => fx.sat, v => fx.sat = v, -100, 100, 1, sgn),
+    slider('Warmte', () => fx.warmth, v => fx.warmth = v, -100, 100, 1, sgn),
+    slider('Vignet', () => fx.vignette, v => fx.vignette = v, -100, 100, 1, sgn),
+    btn('Kleur herstellen', () => { Object.assign(fx, {bright: 0, contrast: 0, sat: 0, warmth: 0, vignette: 0, look: 'none'}); commit(); renderFx(); requestDraw(); }, 'link')));
+  pane.appendChild(group('Look', chips(LOOKS.map(l => [l.id, l.name]), fx.look, v => { fx.look = v; requestDraw(); commit(); })));
+  pane.appendChild(group('Filmisch',
+    el('<span class="glabel">Breedbeeldbalken</span>'),
+    chips([['none', 'Geen'], ['1.85', '1,85 : 1'], ['2.39', '2,39 : 1 (bioscoop)']], fx.bars, v => { fx.bars = v; requestDraw(); commit(); }),
+    slider('Filmkorrel', () => fx.grain, v => fx.grain = v, 0, 100, 1, v => String(v)),
+    slider('Onscherpte', () => fx.blur, v => fx.blur = v, 0, 100, 1, v => String(v)),
+    el('<p class="hint">Onscherpte is handig voor een achtergrondclip met tekst erover.</p>')));
+  pane.scrollTop = scrollTop;
 }
 function posClipId(c){ const d = $(`.clip[data-id="${c.id}"]`); if(d) posClip(d, c); }
 function setSpeed(c, v){
