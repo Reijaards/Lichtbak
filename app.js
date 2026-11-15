@@ -1036,6 +1036,8 @@ async function checkInbox(){
 }
 
 /* ================= start ================= */
+window.addEventListener('lichtbak-blocked', () => toast('Lichtbak is nog open in een ander venster of tabblad met een oudere versie. Sluit alle andere Lichtbak-vensters; daarna gaat het vanzelf verder.', 0));
+window.addEventListener('lichtbak-outdated', () => toast('Er is een nieuwere versie van Lichtbak geopend. Sluit dit venster en ga verder in het nieuwe.', 0));
 async function init(){
   if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
   try { R = new E.Renderer(glc, true); }
@@ -1047,6 +1049,7 @@ async function init(){
   glc.addEventListener('webglcontextlost', e => { e.preventDefault(); toast('De grafische chip werd even gereset. De foto wordt opnieuw geladen.'); });
   glc.addEventListener('webglcontextrestored', () => { R = new E.Renderer(glc, true); orientedKey = ''; requestRender(); });
   userPresets = (await store.getMeta('presets')) || [];
+  if(($('#toast').textContent || '').startsWith('Lichtbak is nog open')) $('#toast').hidden = true;
   clipboard = (await store.getMeta('clipboard')) || null;
   defaultText = (await store.getMeta('defaultText')) || null;
   buildEditorUI();

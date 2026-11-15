@@ -12,8 +12,15 @@ function open(){
       if(!has('meta')) d.createObjectStore('meta');
       if(!has('docs')) d.createObjectStore('docs', {keyPath:'id'});
     };
-    r.onsuccess = () => res(r.result);
-    r.onerror = () => rej(r.error);
+    r.onsuccess = () => {
+      const d = r.result;
+      // Een nieuwere versie van Lichtbak (ander venster) wil de opslag bijwerken: maak direct plaats.
+      d.onversionchange = () => { d.close(); dbp = null; window.dispatchEvent(new CustomEvent('lichtbak-outdated')); };
+      res(d);
+    };
+    r.onerror = () => { dbp = null; rej(r.error); };
+    // Een ouder Lichtbak-venster houdt de opslag nog vast.
+    r.onblocked = () => window.dispatchEvent(new CustomEvent('lichtbak-blocked'));
   }));
 }
 function run(stores, mode, fn){

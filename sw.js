@@ -1,5 +1,5 @@
 // Lichtbak service worker: laat de app offline werken en ontvangt gedeelde foto's.
-const VERSION = 'lichtbak-v3';
+const VERSION = 'lichtbak-v4';
 const SHELL = ['./', 'index.html', 'app.css', 'app.js', 'engine.js', 'store.js', 'sample.js', 'bewerk.js',
   'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'maskable-512.png', 'apple-touch-icon.png'];
 
