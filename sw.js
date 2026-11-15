@@ -1,6 +1,6 @@
 // Lichtbak service worker: laat de app offline werken en ontvangt gedeelde foto's.
-const VERSION = 'lichtbak-v5';
-const SHELL = ['./', 'index.html', 'app.css', 'app.js', 'engine.js', 'store.js', 'sample.js', 'bewerk.js', 'camera.js',
+const VERSION = 'lichtbak-v6';
+const SHELL = ['./', 'index.html', 'app.css', 'app.js', 'engine.js', 'store.js', 'sample.js', 'bewerk.js', 'camera.js', 'video.html',
   'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'maskable-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
@@ -42,9 +42,10 @@ self.addEventListener('fetch', e => {
 
   // App zelf: direct uit de cache, op de achtergrond bijwerken
   e.respondWith(caches.open(VERSION).then(async c => {
-    const key = req.mode === 'navigate' ? 'index.html' : req;
+    const nav = req.mode === 'navigate', page = nav && /video\.html$/.test(url.pathname) ? 'video.html' : 'index.html';
+    const key = nav ? page : req;
     const hit = await c.match(key, {ignoreSearch:true});
-    const net = fetch(req).then(res => { if(res.ok && req.mode !== 'navigate') c.put(req, res.clone()); if(res.ok && req.mode === 'navigate') c.put('index.html', res.clone()); return res; }).catch(() => null);
+    const net = fetch(req).then(res => { if(res.ok && !res.redirected) c.put(key, res.clone()); return res; }).catch(() => null);
     if(hit){ e.waitUntil(net); return hit; }
     return (await net) || new Response('Offline', {status:503});
   }));

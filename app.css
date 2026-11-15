@@ -309,3 +309,4 @@ input[type=color]{width:38px;height:32px;border:1px solid var(--line);border-rad
 .cam-shutter{width:74px;height:74px;border-radius:50%;border:4px solid #fff;background:#fff;box-shadow:inset 0 0 0 4px #000;cursor:pointer;grid-column:2}
 .cam-shutter:active{transform:scale(.94)}
 .cam-side{justify-self:end;display:flex;gap:8px}
+a.btn{text-decoration:none;color:inherit}

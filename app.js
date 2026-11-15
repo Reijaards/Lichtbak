@@ -962,6 +962,7 @@ $('#addMenu').onclick = e => { const a = e.target.dataset.add; if(!a) return; $(
   if(a === 'photos') fileIn.click();
   if(a === 'blank') BW.newBlankDlg();
   if(a === 'camera') CAM.open();
+  if(a === 'video') location.href = 'video.html';
   if(a === 'native') nativeCamera();
   if(a === 'sample') $('#sampleBtn').click(); };
 $('#emptyImport').onclick = () => fileIn.click();
