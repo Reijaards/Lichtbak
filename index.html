@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!DOCTYPE html><html lang="nl" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Lichtbak</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,8 +15,10 @@
   --bg:#16181b; --surface:#1d2024; --surface-2:#272b30; --line:#343a41; --fg:#e8eaed; --muted:#959ca6;
   --accent:#f0a43a; --accent-ink:#1a1206; --accent-soft:rgba(240,164,58,.14); --stage:#0e0f11; --danger:#ff8a80; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#16181b; --surface:#1d2024; --surface-2:#272b30; --line:#343a41; --fg:#e8eaed; --muted:#959ca6;
-  --accent:#f0a43a; --accent-ink:#1a1206; --accent-soft:rgba(240,164,58,.14); --stage:#0e0f11; --danger:#ff8a80; color-scheme:dark}
+  --bg:#000000; --surface:#0e0e10; --surface-2:#1b1c1f; --line:#2a2c30; --fg:#ececee; --muted:#9b9ea6;
+  --accent:#f0a43a; --accent-ink:#1a1206; --accent-soft:rgba(240,164,58,.15); --stage:#000000; --danger:#ff8a80; color-scheme:dark}
+:root[data-theme="dark"] body{background:#000}
+:root[data-theme="dark"] .wrap{box-shadow:0 0 0 1px rgba(255,255,255,.08),0 8px 30px rgba(0,0,0,.6)}
 
 [hidden]{display:none!important}
 html,body{height:100%}
@@ -138,11 +140,11 @@ body.vmode .app>.main, body.vmode .bar>.tools:not(#vtools){display:none!importan
 body:not(.vmode) #vmain, body:not(.vmode) #vtools{display:none!important}
 
 /* ===== Video-werkruimte ===== */
-:root{--c-video:#4a78c8;--c-image:#2b9a8c;--c-audio:#3c9a58;--c-text:var(--accent);--th:110px}
+:root{--c-video:#4a78c8;--c-image:#2b9a8c;--c-audio:#3c9a58;--c-text:var(--accent);--th:136px}
 #vmain{display:grid;grid-template-columns:minmax(0,1fr) 340px;grid-template-rows:minmax(0,1fr) auto;min-height:0;position:relative}
 .vview{grid-column:1;grid-row:1;display:flex;flex-direction:column;min-height:0;min-width:0;background:var(--stage)}
 .vscreen{flex:1;min-height:0;position:relative;display:grid;place-items:center;overflow:hidden;touch-action:none}
-.vframe{position:relative;box-shadow:0 8px 30px rgba(0,0,0,.35);background:#000}
+.vframe{position:relative;box-shadow:0 0 0 1px rgba(255,255,255,.1),0 8px 30px rgba(0,0,0,.5);background:#000}
 .vframe canvas{display:block;width:100%;height:100%}
 .vframe.grab{cursor:move}
 .vempty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#fff;padding:16px}
@@ -155,7 +157,7 @@ body:not(.vmode) #vmain, body:not(.vmode) #vtools{display:none!important}
 .btn.play{width:42px;padding:0;justify-content:center}
 
 .vpanel{grid-column:2;grid-row:1;border-left:1px solid var(--line);background:var(--surface);overflow-y:auto;min-height:0;display:flex;flex-direction:column}
-.vpanel .tabs{grid-template-columns:repeat(3,1fr)}
+.vpanel .tabs{grid-template-columns:repeat(4,1fr)}
 .vpanel .sec{gap:18px}
 .bin{display:flex;flex-direction:column;gap:6px}
 .bitem{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;align-items:center;padding:6px;border:1px solid var(--line);border-radius:10px;background:var(--bg);cursor:grab}
@@ -193,12 +195,13 @@ body:not(.vmode) #vmain, body:not(.vmode) #vtools{display:none!important}
 .tlscroll{overflow:auto;position:relative;max-height:min(300px,40vh);overscroll-behavior:contain}
 .tlinner{position:relative;min-width:100%}
 .trow{display:flex;height:50px;border-bottom:1px solid var(--line)}
-.trow[data-t=T1]{height:38px}
-.trow[data-t=A1],.trow[data-t=A2]{height:44px}
+.trow.au{height:44px}
 .trow.ruler{height:26px;position:sticky;top:0;z-index:6;background:var(--surface)}
-.th{position:sticky;left:0;z-index:5;width:var(--th);flex:none;background:var(--surface);border-right:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 4px 0 10px;box-sizing:border-box;font-size:12px;white-space:nowrap;font-weight:600;color:var(--muted)}
-.th>span:last-child{display:flex}
-.th button{border:0;background:none;width:26px;height:26px;border-radius:6px;cursor:pointer;color:var(--muted);display:grid;place-items:center}
+.th{position:sticky;left:0;z-index:5;width:var(--th);flex:none;background:var(--surface);border-right:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 2px 0 10px;gap:4px;box-sizing:border-box;font-size:12px;white-space:nowrap;font-weight:600;color:var(--muted)}
+.th>span:last-child{display:flex;flex:none}
+.th .tn{overflow:hidden;text-overflow:ellipsis;min-width:0;cursor:text}
+.th .tnin{width:100%;min-width:0;height:24px;border:1px solid var(--accent);border-radius:5px;background:var(--bg);padding:0 5px;font-size:12px}
+.th button{border:0;background:none;width:24px;height:26px;border-radius:6px;cursor:pointer;color:var(--muted);display:grid;place-items:center}
 .th button svg{width:15px;height:15px}
 .th button.off{color:var(--danger)}
 .lane{position:relative;flex:1;background:var(--bg)}
@@ -245,9 +248,31 @@ body:not(.vmode) #vmain, body:not(.vmode) #vtools{display:none!important}
 }
 @media (max-width:820px){
   .tlbar input[type=range],.tlbar .sep{display:none}
-  :root{--th:104px}
+  :root{--th:146px}
   .transport #vFmtInfo{display:none}
 }
+
+/* menu, sjablonen, volledig scherm */
+.menu{position:fixed;z-index:75;min-width:190px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:5px;box-shadow:0 12px 40px rgba(0,0,0,.5);display:flex;flex-direction:column}
+.menu button{border:0;background:none;text-align:left;padding:8px 10px;border-radius:6px;cursor:pointer;font-weight:500}
+.menu button:hover:not(:disabled),.menu button:focus-visible{background:var(--surface-2)}
+.menu button:disabled{opacity:.35;cursor:default}
+.menu button.danger{color:var(--danger)}
+.tinput{height:36px;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:0 10px;width:100%;box-sizing:border-box}
+.tplgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tpl{border:1px solid var(--line);background:var(--surface-2);border-radius:10px;padding:6px 6px 9px;cursor:pointer;display:flex;flex-direction:column;gap:3px;text-align:left}
+.tpl:hover,.ptpl:hover{border-color:var(--accent)}
+.tpl b,.ptpl b{font-size:13px;font-weight:600;padding:0 3px}
+.tpl small,.ptpl small{color:var(--muted);font-size:11.5px;line-height:1.35;padding:0 3px}
+.tplv{position:relative;aspect-ratio:16/9;border-radius:6px;overflow:hidden;background:linear-gradient(135deg,#3a3f47,#15171a);margin-bottom:4px}
+.tplv span{position:absolute;white-space:nowrap;line-height:1.1;padding:2px 4px;border-radius:2px;max-width:92%;overflow:hidden;text-overflow:ellipsis}
+.tplv small{display:block;font-family:Inter,sans-serif;font-weight:500;font-size:.6em;opacity:.85;color:inherit;padding:0}
+.ptpl{border:1px solid var(--line);background:var(--surface-2);border-radius:10px;padding:10px;cursor:pointer;display:flex;flex-direction:column;gap:2px;text-align:left}
+.vview:fullscreen{background:#000}
+.vview.theater{position:fixed;inset:0;z-index:80;background:#000}
+.vview:fullscreen .vscreen,.vview.theater .vscreen{background:#000}
+.vview:fullscreen .vframe,.vview.theater .vframe{box-shadow:none}
+body.noscroll{overflow:hidden}
 
 </style>
 </head><body>
@@ -348,6 +373,7 @@ body:not(.vmode) #vmain, body:not(.vmode) #vtools{display:none!important}
         <span class="time" id="vTime">00:00.0 <span>/ 00:00.0</span></span>
         <span class="sp"></span>
         <span class="info" id="vFmtInfo"></span>
+        <button class="btn icon" id="vFull" title="Volledig scherm (F)" aria-label="Volledig scherm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5"/><path d="M20 9V4h-5"/><path d="M4 15v5h5"/><path d="M20 15v5h-5"/></svg></button>
       </div>
     </section>
 
@@ -355,6 +381,7 @@ body:not(.vmode) #vmain, body:not(.vmode) #vtools{display:none!important}
       <nav class="tabs" role="tablist" id="vtabs">
         <button class="tab" role="tab" data-vt="media" aria-selected="true">Media</button>
         <button class="tab" role="tab" data-vt="clip" aria-selected="false">Clip</button>
+        <button class="tab" role="tab" data-vt="tpl" aria-selected="false">Sjablonen</button>
         <button class="tab" role="tab" data-vt="project" aria-selected="false">Project</button>
       </nav>
       <section class="sec" data-vp="media">
@@ -364,6 +391,7 @@ body:not(.vmode) #vmain, body:not(.vmode) #vtools{display:none!important}
         <p class="hint" id="vBinHint">Klik op <b>+</b> om een bestand achteraan de tijdlijn te zetten, of sleep het naar een spoor.</p>
       </section>
       <section class="sec" data-vp="clip" id="vclip" hidden></section>
+      <section class="sec" data-vp="tpl" id="vtpl" hidden></section>
       <section class="sec" data-vp="project" hidden>
         <div class="field"><label for="vName">Projectnaam</label><input type="text" id="vName"></div>
         <div class="group"><span class="glabel">Formaat</span><div class="fmtgrid" id="vfmts"></div></div>
@@ -381,6 +409,8 @@ body:not(.vmode) #vmain, body:not(.vmode) #vtools{display:none!important}
         <button class="btn icon" id="tDup" title="Dupliceren (Ctrl+D)" aria-label="Dupliceren"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M4 16V5a1 1 0 0 1 1-1h11"/></svg></button>
         <span class="sep"></span>
         <button class="btn" id="tText" title="Tekst toevoegen op de afspeelkop (T)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg><span class="lbl">Tekst</span></button>
+        <button class="btn" id="tAddLayer" title="Nieuwe beeldlaag bovenaan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg><span class="lbl">Laag</span></button>
+        <button class="btn" id="tAddAudio" title="Nieuw audiospoor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span class="lbl">Audiospoor</span></button>
         <span class="sp"></span>
         <button class="btn icon on" id="tSnap" title="Magnetisch: clips klikken tegen randen en de afspeelkop" aria-label="Magnetisch" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15-4-4 6.75-6.77a7.79 7.79 0 0 1 11 11L13 22l-4-4 6.39-6.36a2.14 2.14 0 0 0-3-3L6 15"/><path d="m5 8 4 4"/><path d="m12 15 4 4"/></svg></button>
         <button class="btn icon" id="tZoomOut" title="Uitzoomen (-)" aria-label="Uitzoomen">−</button>
@@ -391,11 +421,7 @@ body:not(.vmode) #vmain, body:not(.vmode) #vtools{display:none!important}
       <div class="tlscroll" id="tlscroll">
         <div class="tlinner" id="tlinner">
           <div class="trow ruler"><div class="th"></div><div class="lane" id="ruler"><canvas id="rulerC"></canvas></div></div>
-          <div class="trow" data-t="T1"><div class="th"><span>Tekst</span><span><button data-hide="T1" title="Spoor verbergen" aria-label="Tekstspoor verbergen"></button></span></div><div class="lane"></div></div>
-          <div class="trow" data-t="V2"><div class="th"><span>Video 2</span><span><button data-hide="V2" title="Spoor verbergen" aria-label="Video 2 verbergen"></button><button data-mute="V2" title="Geluid uit" aria-label="Video 2 geluid uit"></button></span></div><div class="lane"></div></div>
-          <div class="trow" data-t="V1"><div class="th"><span>Video 1</span><span><button data-hide="V1" title="Spoor verbergen" aria-label="Video 1 verbergen"></button><button data-mute="V1" title="Geluid uit" aria-label="Video 1 geluid uit"></button></span></div><div class="lane"></div></div>
-          <div class="trow" data-t="A1"><div class="th"><span>Audio 1</span><span><button data-mute="A1" title="Geluid uit" aria-label="Audio 1 geluid uit"></button></span></div><div class="lane"></div></div>
-          <div class="trow" data-t="A2"><div class="th"><span>Audio 2</span><span><button data-mute="A2" title="Geluid uit" aria-label="Audio 2 geluid uit"></button></span></div><div class="lane"></div></div>
+          <div id="trows"></div>
           <div class="ph" id="ph"></div>
         </div>
       </div>
@@ -989,8 +1015,6 @@ const FMTS = {
   '1:1':  [1080, 1080, 'Vierkant', 'Instagram, Facebook'],
   '4:5':  [1080, 1350, 'Portret', 'Instagram-feed'],
 };
-const TRACKS = ['T1', 'V2', 'V1', 'A1', 'A2'];
-const KIND = {video: ['V1', 'V2'], image: ['V1', 'V2'], audio: ['A1', 'A2'], text: ['T1']};
 const TYPE_NL = {video: 'Video', image: 'Foto', audio: 'Audio', text: 'Tekst'};
 const FONTS = [['Strak', 'Inter', 700], ['Klassiek', 'Playfair Display', 700], ['Handschrift', 'Caveat', 700], ['Poster', 'Bebas Neue', 400], ['Typemachine', 'Courier Prime', 700], ['Modern', 'Sora', 600]];
 const COLORS = ['#ffffff', '#111111', '#f0a43a', '#d94b3d', '#3d7bd9', '#2f9e6b'];
@@ -1007,7 +1031,13 @@ const LOOKS = [
   {id: 'vivid', name: 'Levendig', f: 'saturate(1.5) contrast(1.08)'},
   {id: 'film', name: 'Film', f: 'contrast(1.1) saturate(.9) sepia(.12) hue-rotate(-6deg)'},
 ];
-const ANIMS = [['none', 'Geen'], ['fade', 'Vervagen'], ['rise', 'Omhoog'], ['pop', 'Opveren'], ['type', 'Typen']];
+const BLENDS = [['source-over', 'Normaal'], ['multiply', 'Vermenigvuldigen'], ['screen', 'Bleken'], ['overlay', 'Bedekken'], ['lighten', 'Lichter'], ['darken', 'Donkerder']];
+const ANIMS = [['none', 'Geen'], ['fade', 'Vervagen'], ['rise', 'Omhoog'], ['slide', 'Inschuiven'], ['pop', 'Opveren'], ['type', 'Typen']];
+const BOXES = [['none', 'Geen'], ['box', 'Vlak'], ['bar', 'Naambalk'], ['band', 'Brede band']];
+const LAYOUTS = [
+  ['full', 'Volledig', null], ['left', 'Linkerhelft', {x: 0, y: 0, w: .5, h: 1}], ['right', 'Rechterhelft', {x: .5, y: 0, w: .5, h: 1}],
+  ['top', 'Bovenhelft', {x: 0, y: 0, w: 1, h: .5}], ['bottom', 'Onderhelft', {x: 0, y: .5, w: 1, h: .5}], ['pip', 'Beeld-in-beeld', {x: .63, y: .06, w: .33, h: .33}],
+];
 const ICON = {
   play: '<svg viewBox="0 0 24 24"><path d="M7 4v16l13-8z" fill="currentColor"/></svg>',
   pause: '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"/></svg>',
@@ -1015,9 +1045,14 @@ const ICON = {
   mute: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></svg>',
   eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
   eyeOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.2M6.6 6.6C3.8 8.4 2 12 2 12s3.5 7 10 7a9.6 9.6 0 0 0 5.4-1.6"/></svg>',
+  more: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>',
   plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
   trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>',
   audio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
+  rotL: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4v5h5"/><path d="M3.5 9A9 9 0 1 1 6 18"/></svg>',
+  rotR: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4v5h-5"/><path d="M20.5 9A9 9 0 1 0 18 18"/></svg>',
+  flipH: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M8 7 3 12l5 5V7z"/><path d="M16 7l5 5-5 5V7z"/></svg>',
+  flipV: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18"/><path d="M7 8l5-5 5 5H7z"/><path d="M7 16l5 5 5-5H7z"/></svg>',
 };
 
 /* ---------- toast & vraag ---------- */
@@ -1042,7 +1077,8 @@ function fmtT(s, dec = 1){
 const fmtS = v => (Math.round(v * 10) / 10).toLocaleString('nl-NL') + ' s';
 
 /* ---------- staat ---------- */
-const DEFP = () => ({name: 'Mijn video', fmt: '16:9', clips: [], hide: {}, mute: {}});
+const DEFTRACKS = () => [{id: 'T1', kind: 'v', name: 'Tekst'}, {id: 'V2', kind: 'v', name: 'Video 2'}, {id: 'V1', kind: 'v', name: 'Video 1'}, {id: 'A1', kind: 'a', name: 'Audio 1'}, {id: 'A2', kind: 'a', name: 'Audio 2'}];
+const DEFP = () => ({name: 'Mijn video', fmt: '16:9', clips: [], hide: {}, mute: {}, tracks: DEFTRACKS()});
 let P = DEFP();
 const media = new Map();
 let t = 0, playing = false, sel = null, pps = 60, snapOn = true, exporting = null, inited = false;
@@ -1050,15 +1086,37 @@ const byId = id => P.clips.find(c => c.id === id);
 const end = c => c.start + c.dur;
 const total = () => P.clips.reduce((m, c) => Math.max(m, end(c)), 0);
 const isMediaClip = c => c.type === 'video' || c.type === 'audio';
+const isVisual = c => c.type !== 'audio';
+const trackOf = id => P.tracks.find(x => x.id === id);
+const vTracks = () => P.tracks.filter(x => x.kind === 'v');
+const aTracks = () => P.tracks.filter(x => x.kind === 'a');
+const accepts = (tr, type) => { const x = trackOf(tr); return !!x && (x.kind === 'a') === (type === 'audio'); };
 
 function newClip(type, track, start, dur, mediaId){
-  return {id: uid(), type, track, start, dur, media: mediaId || null, in: 0, speed: 1, vol: 100, fadeIn: 0, fadeOut: 0,
-    fx: {bright: 0, contrast: 0, sat: 0, warmth: 0, vignette: 0, look: 'none'},
-    tf: {scale: 100, x: 0, y: 0, fit: 'cover', kb: 0},
-    tx: type === 'text' ? {content: 'Je tekst hier', font: 0, size: 8, color: '#ffffff', x: .5, y: .82, bg: true, anim: 'fade'} : null};
+  return normalize({id: uid(), type, track, start, dur, media: mediaId || null, in: 0, speed: 1, vol: 100, fadeIn: 0, fadeOut: 0,
+    tx: type === 'text' ? {content: 'Je tekst hier'} : null});
+}
+/* vult ontbrekende velden aan (ook voor projecten uit een eerdere versie) */
+function normalize(c){
+  c.fx = Object.assign({bright: 0, contrast: 0, sat: 0, warmth: 0, vignette: 0, look: 'none'}, c.fx || {});
+  c.tf = Object.assign({scale: 100, x: 0, y: 0, fit: 'cover', kb: 0, rot: 0, flipH: false, flipV: false, crop: {l: 0, r: 0, t: 0, b: 0}, box: null, opacity: 100, blend: 'source-over', blurBg: false}, c.tf || {});
+  c.tf.crop = Object.assign({l: 0, r: 0, t: 0, b: 0}, c.tf.crop || {});
+  if(c.type === 'text'){
+    const X = c.tx || {};
+    if(X.box === undefined) X.box = X.bg === false ? 'none' : 'box';
+    delete X.bg;
+    c.tx = Object.assign({content: 'Je tekst hier', sub: '', font: 0, size: 8, color: '#ffffff', bgColor: '', x: .5, y: .82, anim: 'fade', align: 'center', opacity: 100, rot: 0}, X);
+  }
+  return c;
+}
+function normalizeP(){
+  if(!Array.isArray(P.tracks) || !P.tracks.length) P.tracks = DEFTRACKS();
+  P.hide = P.hide || {}; P.mute = P.mute || {};
+  P.clips.forEach(normalize);
+  P.clips = P.clips.filter(c => trackOf(c.track) && accepts(c.track, c.type));
 }
 
-/* ---------- plaats zoeken op een spoor ---------- */
+/* ---------- sporen ---------- */
 function onTrack(tr, exclude){ return P.clips.filter(c => c.track === tr && c.id !== exclude).sort((a, b) => a.start - b.start); }
 function fitInTrack(tr, start, dur, exclude){
   const list = onTrack(tr, exclude); let best = null, bd = Infinity, prev = 0;
@@ -1072,6 +1130,7 @@ function fitInTrack(tr, start, dur, exclude){
   }
   return best;
 }
+const isFree = (tr, s, dur) => { const f = fitInTrack(tr, s, dur, null); return f != null && Math.abs(f - s) < EPS; };
 const trackEnd = tr => onTrack(tr).reduce((m, c) => Math.max(m, end(c)), 0);
 function neighbors(c, o = c){
   let prevEnd = 0, nextStart = Infinity;
@@ -1081,6 +1140,25 @@ function neighbors(c, o = c){
   }
   return {prevEnd, nextStart};
 }
+function nextName(kind){
+  const base = kind === 'v' ? 'Laag' : 'Audio';
+  let n = P.tracks.filter(x => x.kind === kind).length + 1;
+  while(P.tracks.some(x => x.name === `${base} ${n}`)) n++;
+  return `${base} ${n}`;
+}
+function addTrack(kind, where){
+  const tr = {id: (kind === 'v' ? 'L' : 'S') + uid(), kind, name: nextName(kind)};
+  if(where != null) P.tracks.splice(where, 0, tr);
+  else if(kind === 'v') P.tracks.splice(0, 0, tr);
+  else P.tracks.push(tr);
+  return tr.id;
+}
+/* bovenste beeldlaag met ruimte op [s, s+dur]; anders een nieuwe laag bovenaan */
+function freeVisualTrack(s, dur){
+  for(const tr of vTracks()) if(isFree(tr.id, s, dur)) return tr.id;
+  return addTrack('v');
+}
+const bottomVisual = () => { const v = vTracks(); return v[v.length - 1].id; };
 
 /* ---------- geschiedenis ---------- */
 let hist = [], hi = -1;
@@ -1215,7 +1293,7 @@ async function importFiles(list){
   if(!wasEmpty) setTab('media');
 }
 function addToTimeline(m, doCommit = true, at = null, track = null){
-  const tr = track || KIND[m.type][0], dur = m.type === 'image' ? 4 : m.dur;
+  const tr = track || (m.type === 'audio' ? aTracks()[0].id : bottomVisual()), dur = m.type === 'image' ? 4 : m.dur;
   let s = at != null ? fitInTrack(tr, at, dur, null) : trackEnd(tr);
   if(s == null) s = trackEnd(tr);
   const c = newClip(m.type, tr, s, dur, m.id);
@@ -1313,8 +1391,11 @@ function draw(){
   cx.setTransform(1, 0, 0, 1, 0, 0); cx.globalAlpha = 1; cx.filter = 'none'; cx.globalCompositeOperation = 'source-over';
   cx.fillStyle = '#000'; cx.fillRect(0, 0, W, H);
   drawBoxes = [];
-  for(const tr of ['V1', 'V2']){ if(P.hide[tr]) continue; for(const c of activeOn(tr, at)) drawVisual(c, W, H, at); }
-  if(!P.hide.T1) for(const c of activeOn('T1', at)) drawText(c, W, H, at);
+  const layers = vTracks().reverse();
+  for(const tr of layers){
+    if(P.hide[tr.id]) continue;
+    for(const c of activeOn(tr.id, at)){ c.type === 'text' ? drawText(c, W, H, at) : drawVisual(c, W, H, at); }
+  }
   if(!exporting && !playing && sel){
     const b = drawBoxes.find(b => b.id === sel);
     if(b){
@@ -1330,25 +1411,45 @@ function drawVisual(c, W, H, at){
   let src, sw, sh;
   if(c.type === 'image'){ src = m.img; sw = m.w; sh = m.h; if(!src) return; }
   else { const p = pool.get(c.id); if(!p) return; src = p.el; sw = src.videoWidth; sh = src.videoHeight; if(!sw || src.readyState < 1) return; }
-  const pr = clamp((at - c.start) / c.dur, 0, 1), tf = c.tf;
-  const s0 = tf.fit === 'contain' ? Math.min(W / sw, H / sh) : Math.max(W / sw, H / sh);
+  const tf = c.tf, cr = tf.crop, pr = clamp((at - c.start) / c.dur, 0, 1);
+  const R = tf.box || {x: 0, y: 0, w: 1, h: 1}, RX = R.x * W, RY = R.y * H, RW = R.w * W, RH = R.h * H;
+  const qx = sw * cr.l / 100, qy = sh * cr.t / 100, qw = Math.max(1, sw * (1 - (cr.l + cr.r) / 100)), qh = Math.max(1, sh * (1 - (cr.t + cr.b) / 100));
+  const rad = (tf.rot || 0) * Math.PI / 180, co = Math.abs(Math.cos(rad)), si = Math.abs(Math.sin(rad));
+  const bw = qw * co + qh * si, bh = qw * si + qh * co;
+  const s0 = tf.fit === 'contain' ? Math.min(RW / bw, RH / bh) : Math.max(RW / bw, RH / bh);
   const s = s0 * tf.scale / 100 * (1 + (tf.kb || 0) / 100 * pr);
-  const dw = sw * s, dh = sh * s, dx = W / 2 + tf.x / 100 * W - dw / 2, dy = H / 2 + tf.y / 100 * H - dh / 2;
-  const a = fadeAlpha(c, at);
-  drawBoxes.push({id: c.id, x0: Math.max(0, dx / W), y0: Math.max(0, dy / H), x1: Math.min(1, (dx + dw) / W), y1: Math.min(1, (dy + dh) / H)});
+  const ccx = RX + RW / 2 + tf.x / 100 * W, ccy = RY + RH / 2 + tf.y / 100 * H;
+  const a = fadeAlpha(c, at) * (tf.opacity ?? 100) / 100;
+  const full = !tf.box;
+  drawBoxes.push({id: c.id,
+    x0: Math.max(RX, ccx - bw * s / 2) / W, y0: Math.max(RY, ccy - bh * s / 2) / H,
+    x1: Math.min(RX + RW, ccx + bw * s / 2) / W, y1: Math.min(RY + RH, ccy + bh * s / 2) / H});
   if(a <= 0) return;
-  cx.save(); cx.globalAlpha = a;
-  const f = filterStr(c.fx); if(f) cx.filter = f;
-  try{ cx.drawImage(src, dx, dy, dw, dh); }catch(_){}
+  cx.save();
+  if(!full){ cx.beginPath(); cx.rect(RX, RY, RW, RH); cx.clip(); }
+  cx.globalAlpha = a;
+  const f = filterStr(c.fx);
+  if(tf.blurBg){
+    const sb = Math.max(RW / qw, RH / qh) * 1.08;
+    cx.filter = `blur(${Math.round(Math.min(W, H) / 28)}px) brightness(.7)` + (f ? ' ' + f : '');
+    try{ cx.drawImage(src, qx, qy, qw, qh, RX + RW / 2 - qw * sb / 2, RY + RH / 2 - qh * sb / 2, qw * sb, qh * sb); }catch(_){}
+  }
+  cx.globalCompositeOperation = tf.blend || 'source-over';
+  cx.filter = f || 'none';
+  cx.translate(ccx, ccy); cx.rotate(rad); cx.scale(tf.flipH ? -1 : 1, tf.flipV ? -1 : 1);
+  const dw = qw * s, dh = qh * s;
+  try{ cx.drawImage(src, qx, qy, qw, qh, -dw / 2, -dh / 2, dw, dh); }catch(_){}
   cx.filter = 'none';
   const L = LOOKS.find(l => l.id === c.fx.look), tints = [];
   if(L && L.tint) tints.push(L.tint);
   if(c.fx.warmth) tints.push(c.fx.warmth > 0 ? `rgba(255,140,40,${c.fx.warmth / 100 * .5})` : `rgba(60,130,255,${-c.fx.warmth / 100 * .5})`);
   if(tints.length || c.fx.vignette){
-    cx.beginPath(); cx.rect(dx, dy, dw, dh); cx.clip();
-    if(tints.length){ cx.globalCompositeOperation = 'soft-light'; for(const tc of tints){ cx.fillStyle = tc; cx.fillRect(0, 0, W, H); } cx.globalCompositeOperation = 'source-over'; }
+    cx.beginPath(); cx.rect(-dw / 2, -dh / 2, dw, dh); cx.clip();
+    cx.setTransform(1, 0, 0, 1, 0, 0);
+    if(tints.length){ cx.globalCompositeOperation = 'soft-light'; for(const tc of tints){ cx.fillStyle = tc; cx.fillRect(0, 0, W, H); } }
+    cx.globalCompositeOperation = 'source-over';
     if(c.fx.vignette){
-      const v = c.fx.vignette / 100, R = Math.hypot(W, H) / 2, g = cx.createRadialGradient(W / 2, H / 2, R * .38, W / 2, H / 2, R);
+      const v = c.fx.vignette / 100, Rr = Math.hypot(RW, RH) / 2, g = cx.createRadialGradient(RX + RW / 2, RY + RH / 2, Rr * .38, RX + RW / 2, RY + RH / 2, Rr);
       const col = v > 0 ? '0,0,0' : '255,255,255';
       g.addColorStop(0, `rgba(${col},0)`); g.addColorStop(1, `rgba(${col},${Math.abs(v) * .8})`);
       cx.fillStyle = g; cx.fillRect(0, 0, W, H);
@@ -1371,38 +1472,57 @@ function wrapLines(text, maxW){
 function isLight(hex){ const n = parseInt(hex.slice(1), 16); return (.299 * (n >> 16) + .587 * ((n >> 8) & 255) + .114 * (n & 255)) > 140; }
 function rrect(x, y, w, h, r){ cx.beginPath(); cx.moveTo(x + r, y); cx.arcTo(x + w, y, x + w, y + h, r); cx.arcTo(x + w, y + h, x, y + h, r); cx.arcTo(x, y + h, x, y, r); cx.arcTo(x, y, x + w, y, r); cx.closePath(); }
 function drawText(c, W, H, at){
-  const X = c.tx; if(!X.content.trim()) return;
-  const F = FONTS[X.font] || FONTS[0], px = X.size / 100 * Math.min(W, H);
+  const X = c.tx; if(!X.content.trim() && !X.sub.trim()) return;
+  const F = FONTS[X.font] || FONTS[0], px = X.size / 100 * Math.min(W, H), ps = px * .55;
   const l = at - c.start, ain = clamp(l / .45, 0, 1), e = 1 - Math.pow(1 - ain, 3);
   const still = !playing && !exporting && c.id === sel;
-  let a = still ? 1 : fadeAlpha(c, at), dy = 0, sc = 1, shown = Infinity;
-  if(still);
-  else if(X.anim === 'fade') a *= ain;
-  else if(X.anim === 'rise'){ a *= ain; dy = (1 - e) * px * .9; }
-  else if(X.anim === 'pop'){ a *= Math.min(1, ain * 2); sc = .55 + .45 * (1 + 2.2 * Math.pow(e - 1, 3) + 1.2 * Math.pow(e - 1, 2)); }
-  else if(X.anim === 'type'){ shown = Math.floor(l * 20); }
+  let a = (still ? 1 : fadeAlpha(c, at)) * X.opacity / 100, dx = 0, dy = 0, sc = 1, shown = Infinity;
+  if(!still){
+    if(X.anim === 'fade') a *= ain;
+    else if(X.anim === 'rise'){ a *= ain; dy = (1 - e) * px * .9; }
+    else if(X.anim === 'slide'){ a *= Math.min(1, ain * 1.5); dx = -(1 - e) * W * .12; }
+    else if(X.anim === 'pop'){ a *= Math.min(1, ain * 2); sc = .55 + .45 * (1 + 2.2 * Math.pow(e - 1, 3) + 1.2 * Math.pow(e - 1, 2)); }
+    else if(X.anim === 'type'){ shown = Math.floor(l * 20); }
+  }
   cx.save();
-  cx.font = `${F[2]} ${px}px "${F[1]}", sans-serif`; cx.textBaseline = 'middle'; cx.textAlign = 'center';
-  const lines = wrapLines(X.content, W * .9), lh = px * 1.18;
-  const tw = Math.max(...lines.map(s => cx.measureText(s).width)), th = lines.length * lh, pad = px * .38;
-  const x0 = X.x * W, y0 = X.y * H;
-  drawBoxes.push({id: c.id, x0: (x0 - tw / 2 - pad) / W, y0: (y0 - th / 2 - pad * .6) / H, x1: (x0 + tw / 2 + pad) / W, y1: (y0 + th / 2 + pad * .6) / H});
+  const mainFont = `${F[2]} ${px}px "${F[1]}", sans-serif`, subFont = `500 ${ps}px "Inter", sans-serif`;
+  cx.font = mainFont; const lines = X.content.trim() ? wrapLines(X.content, W * .9) : [];
+  cx.font = subFont; const subs = X.sub.trim() ? wrapLines(X.sub, W * .9) : [];
+  const lh = px * 1.18, lhs = ps * 1.3, gap = lines.length && subs.length ? px * .12 : 0;
+  cx.font = mainFont; const wm = lines.map(s => cx.measureText(s).width);
+  cx.font = subFont; const ws = subs.map(s => cx.measureText(s).width);
+  const tw = Math.max(1, ...wm, ...ws), th = lines.length * lh + gap + subs.length * lhs;
+  const pad = px * .38, bar = X.box === 'bar' ? Math.max(4, px * .14) : 0;
+  const ax = X.x * W, ay = X.y * H;
+  const bcx = X.align === 'left' ? ax + tw / 2 + bar : X.align === 'right' ? ax - tw / 2 : ax;
+  const bx0 = -tw / 2 - pad - bar, bxw = tw + 2 * pad + bar, by0 = -th / 2 - pad * .6, byh = th + pad * 1.2;
+  if(X.box === 'band') drawBoxes.push({id: c.id, x0: 0, y0: (ay + by0) / H, x1: 1, y1: (ay + by0 + byh) / H});
+  else drawBoxes.push({id: c.id, x0: (bcx + bx0) / W, y0: (ay + by0) / H, x1: (bcx + bx0 + bxw) / W, y1: (ay + by0 + byh) / H});
   if(a > 0){
-    cx.globalAlpha = a; cx.translate(x0, y0 + dy); cx.scale(sc, sc);
-    if(X.bg){ cx.fillStyle = isLight(X.color) ? 'rgba(0,0,0,.55)' : 'rgba(255,255,255,.8)'; rrect(-tw / 2 - pad, -th / 2 - pad * .6, tw + 2 * pad, th + pad * 1.2, pad * .6); cx.fill(); }
+    cx.globalAlpha = a; cx.translate(bcx + dx, ay + dy); if(X.rot) cx.rotate(X.rot * Math.PI / 180); cx.scale(sc, sc);
+    const bgc = X.bgColor || (isLight(X.color) ? 'rgba(0,0,0,.6)' : 'rgba(255,255,255,.82)');
+    if(X.box === 'box'){ cx.fillStyle = bgc; rrect(bx0, by0, bxw, byh, pad * .6); cx.fill(); }
+    else if(X.box === 'bar'){ cx.fillStyle = bgc; cx.fillRect(bx0, by0, bxw, byh); cx.fillStyle = X.bgColor ? X.color : (getAccent() || '#f0a43a'); cx.fillRect(bx0, by0, bar, byh); }
+    else if(X.box === 'band'){ cx.fillStyle = bgc; cx.fillRect(-bcx - dx - W, by0, W * 3, byh); }
     else { cx.shadowColor = isLight(X.color) ? 'rgba(0,0,0,.6)' : 'rgba(255,255,255,.5)'; cx.shadowBlur = px * .2; cx.shadowOffsetY = px * .05; }
-    cx.fillStyle = X.color;
-    let left = shown;
+    const xFor = w => X.align === 'left' ? -tw / 2 + bar / 2 : X.align === 'right' ? tw / 2 - w : -w / 2;
+    cx.textBaseline = 'middle'; cx.textAlign = 'left'; cx.fillStyle = X.color;
+    let left = shown, y = -th / 2;
+    cx.font = mainFont;
     lines.forEach((s, i) => {
-      let str = s;
-      if(left !== Infinity){ str = s.slice(0, Math.max(0, left)); left -= s.length + 1; }
-      if(!str) return;
-      if(str.length < s.length){ cx.textAlign = 'left'; cx.fillText(str, -cx.measureText(s).width / 2, -th / 2 + lh * (i + .5)); cx.textAlign = 'center'; }
-      else cx.fillText(str, 0, -th / 2 + lh * (i + .5));
+      let str = s; if(left !== Infinity){ str = s.slice(0, Math.max(0, left)); left -= s.length + 1; }
+      if(str) cx.fillText(str, xFor(wm[i]), y + lh / 2); y += lh;
+    });
+    y += gap; cx.font = subFont; cx.globalAlpha = a * .88;
+    subs.forEach((s, i) => {
+      let str = s; if(left !== Infinity){ str = s.slice(0, Math.max(0, left)); left -= s.length + 1; }
+      if(str) cx.fillText(str, xFor(ws[i]), y + lhs / 2); y += lhs;
     });
   }
   cx.restore();
 }
+let accentCache = '';
+function getAccent(){ if(!accentCache) accentCache = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(); return accentCache; }
 
 /* ---------- lus ---------- */
 let raf = 0, last = 0;
@@ -1435,15 +1555,16 @@ function setPlayIcon(){ const b = $('#vPlay'); b.innerHTML = playing ? ICON.paus
 function updTime(){ $('#vTime').innerHTML = `${fmtT(t)} <span>/ ${fmtT(total())}</span>`; }
 
 /* ---------- beeldscherm ---------- */
-const vframe = $('#vframe'), vscreen = $('#vscreen');
+const vframe = $('#vframe'), vscreen = $('#vscreen'), vview = $('.vview');
 function fitFrame(){
   const [W, H] = projDims(), r = vscreen.getBoundingClientRect();
   if(r.width < 2 || r.height < 2) return;
-  const s = Math.min((r.width - 24) / W, (r.height - 24) / H), fw = Math.max(1, Math.floor(W * s)), fh = Math.max(1, Math.floor(H * s));
+  const pad = isFull() ? 0 : 24;
+  const s = Math.min((r.width - pad) / W, (r.height - pad) / H), fw = Math.max(1, Math.floor(W * s)), fh = Math.max(1, Math.floor(H * s));
   vframe.style.width = fw + 'px'; vframe.style.height = fh + 'px';
   if(!exporting){
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    const long = Math.min(Math.max(W, H), 1280, Math.max(640, Math.ceil(Math.max(fw, fh) * dpr / 160) * 160)), k = long / Math.max(W, H);
+    const dpr = Math.min(2, window.devicePixelRatio || 1), cap = isFull() ? 1920 : 1280;
+    const long = Math.min(Math.max(W, H), cap, Math.max(640, Math.ceil(Math.max(fw, fh) * dpr / 160) * 160)), k = long / Math.max(W, H);
     const cw = Math.round(W * k / 2) * 2, ch = Math.round(H * k / 2) * 2;
     if(cv.width !== cw || cv.height !== ch){ cv.width = cw; cv.height = ch; }
   }
@@ -1451,6 +1572,19 @@ function fitFrame(){
   requestDraw();
 }
 function updEmpty(){ $('#vempty').hidden = P.clips.length > 0; }
+
+/* volledig scherm (met eigen weergave als de browser dat weigert) */
+const isFull = () => document.fullscreenElement === vview || vview.classList.contains('theater');
+async function toggleFull(){
+  if(document.fullscreenElement){ document.exitFullscreen().catch(() => {}); return; }
+  if(vview.classList.contains('theater')){ vview.classList.remove('theater'); document.body.classList.remove('noscroll'); fitFrame(); updFullBtn(); return; }
+  try{ await vview.requestFullscreen(); }
+  catch(_){ vview.classList.add('theater'); document.body.classList.add('noscroll'); }
+  fitFrame(); updFullBtn();
+}
+function updFullBtn(){ const f = isFull(); $('#vFull').classList.toggle('on', f); $('#vFull').title = f ? 'Volledig scherm sluiten (F of Esc)' : 'Volledig scherm (F)'; }
+document.addEventListener('fullscreenchange', () => { fitFrame(); updFullBtn(); });
+$('#vFull').onclick = toggleFull;
 
 /* slepen in het voorbeeld om tekst of beeld te verplaatsen */
 let pdrag = null;
@@ -1461,9 +1595,10 @@ vframe.addEventListener('pointerdown', e => {
   let hit = null;
   const sb = drawBoxes.find(b => b.id === sel); if(sb && inside(sb)) hit = sel;
   if(!hit) for(let i = drawBoxes.length - 1; i >= 0; i--) if(inside(drawBoxes[i])){ hit = drawBoxes[i].id; break; }
-  if(!hit) return;
+  if(!hit){ if(isFull()) toggle(); return; }
+  if(playing && isFull()){ toggle(); return; }
   e.preventDefault();
-  if(hit !== sel) select(hit);
+  if(hit !== sel) select(hit, !isFull());
   const c = byId(hit);
   pdrag = {c, p, o: c.type === 'text' ? {x: c.tx.x, y: c.tx.y} : {x: c.tf.x, y: c.tf.y}, moved: false};
   vframe.setPointerCapture(e.pointerId); vframe.classList.add('grab');
@@ -1475,7 +1610,7 @@ vframe.addEventListener('pointermove', e => {
   pdrag.moved = true;
   if(c.type === 'text'){
     let x = clamp(pdrag.o.x + dx, 0, 1), y = clamp(pdrag.o.y + dy, 0, 1);
-    if(Math.abs(x - .5) < .015) x = .5; if(Math.abs(y - .5) < .015) y = .5;
+    if(c.tx.align === 'center' && Math.abs(x - .5) < .015) x = .5; if(Math.abs(y - .5) < .015) y = .5;
     c.tx.x = x; c.tx.y = y;
   } else {
     let x = pdrag.o.x + dx * 100, y = pdrag.o.y + dy * 100;
@@ -1488,22 +1623,76 @@ const endP = () => { if(!pdrag) return; const m = pdrag.moved; pdrag = null; vfr
 vframe.addEventListener('pointerup', endP); vframe.addEventListener('pointercancel', endP);
 
 /* ---------- tijdlijn ---------- */
-const tlscroll = $('#tlscroll'), tlinner = $('#tlinner'), ph = $('#ph'), rulerC = $('#rulerC');
-const lanes = {}; $$('.trow[data-t]').forEach(r => lanes[r.dataset.t] = r.querySelector('.lane'));
-const TH = () => lanes.V1.offsetLeft || 96;
+const tlscroll = $('#tlscroll'), tlinner = $('#tlinner'), ph = $('#ph'), rulerC = $('#rulerC'), rulerLane = $('#ruler'), trows = $('#trows');
+let lanes = {};
+const TH = () => rulerLane.offsetLeft || 120;
+function buildRows(){
+  trows.innerHTML = ''; lanes = {};
+  const nv = vTracks().length, na = aTracks().length;
+  for(const tr of P.tracks){
+    const row = document.createElement('div'); row.className = 'trow ' + (tr.kind === 'a' ? 'au' : 'vi'); row.dataset.t = tr.id;
+    const th = document.createElement('div'); th.className = 'th';
+    const nm = document.createElement('span'); nm.className = 'tn'; nm.textContent = tr.name; nm.title = 'Dubbelklik om de naam te wijzigen';
+    nm.ondblclick = () => renameTrack(tr, nm);
+    const bs = document.createElement('span');
+    if(tr.kind === 'v'){ const b = document.createElement('button'); const off = !!P.hide[tr.id]; b.innerHTML = off ? ICON.eyeOff : ICON.eye; b.classList.toggle('off', off); b.title = off ? 'Laag tonen' : 'Laag verbergen'; b.setAttribute('aria-label', b.title + ': ' + tr.name); b.onclick = () => { P.hide[tr.id] = !off; commit(); renderTL(); requestDraw(); }; bs.appendChild(b); }
+    { const b = document.createElement('button'); const off = !!P.mute[tr.id]; b.innerHTML = off ? ICON.mute : ICON.vol; b.classList.toggle('off', off); b.title = off ? 'Geluid aan' : 'Geluid uit'; b.setAttribute('aria-label', b.title + ': ' + tr.name); b.onclick = () => { P.mute[tr.id] = !off; commit(); renderTL(); requestDraw(); }; bs.appendChild(b); }
+    { const b = document.createElement('button'); b.innerHTML = ICON.more; b.title = 'Meer'; b.setAttribute('aria-label', 'Spooropties: ' + tr.name); b.onclick = ev => trackMenu(tr, ev.currentTarget, nv, na); bs.appendChild(b); }
+    th.append(nm, bs);
+    const lane = document.createElement('div'); lane.className = 'lane'; if(P.hide[tr.id]) lane.style.opacity = .45;
+    row.append(th, lane); trows.appendChild(row); lanes[tr.id] = lane;
+  }
+}
+function renameTrack(tr, nm){
+  const inp = document.createElement('input'); inp.type = 'text'; inp.value = tr.name; inp.className = 'tnin';
+  nm.replaceWith(inp); inp.focus(); inp.select();
+  const done = ok => { if(ok && inp.value.trim()){ tr.name = inp.value.trim().slice(0, 24); commit(); } renderTL(); };
+  inp.onkeydown = e => { if(e.key === 'Enter') inp.blur(); if(e.key === 'Escape'){ inp.onblur = null; done(false); } };
+  inp.onblur = () => done(true);
+}
+let menuEl = null;
+function closeMenu(){ if(menuEl){ menuEl.remove(); menuEl = null; } }
+document.addEventListener('pointerdown', e => { if(menuEl && !menuEl.contains(e.target)) closeMenu(); }, true);
+function trackMenu(tr, btnEl, nv, na){
+  closeMenu();
+  const i = P.tracks.indexOf(tr), same = P.tracks.filter(x => x.kind === tr.kind), j = same.indexOf(tr);
+  const items = [
+    ['Omhoog', j > 0, () => { const k = P.tracks.indexOf(same[j - 1]); [P.tracks[i], P.tracks[k]] = [P.tracks[k], P.tracks[i]]; commit(); renderTL(); requestDraw(); }],
+    ['Omlaag', j < same.length - 1, () => { const k = P.tracks.indexOf(same[j + 1]); [P.tracks[i], P.tracks[k]] = [P.tracks[k], P.tracks[i]]; commit(); renderTL(); requestDraw(); }],
+    [tr.kind === 'v' ? 'Nieuwe laag erboven' : 'Nieuw spoor erboven', true, () => { addTrack(tr.kind, P.tracks.indexOf(tr)); commit(); renderTL(); }],
+    [tr.kind === 'v' ? 'Nieuwe laag eronder' : 'Nieuw spoor eronder', true, () => { addTrack(tr.kind, P.tracks.indexOf(tr) + 1); commit(); renderTL(); }],
+    ['Naam wijzigen', true, () => { const nm = $(`.trow[data-t="${tr.id}"] .tn`); if(nm) renameTrack(tr, nm); }],
+    ['Verwijderen', (tr.kind === 'v' ? nv : na) > 1, async () => {
+      const n = onTrack(tr.id).length;
+      if(n && !await ask(`“${tr.name}” verwijderen?`, `Er staan ${n} clip(s) op dit spoor; die worden ook verwijderd.`, 'Verwijderen')) return;
+      P.clips = P.clips.filter(c => c.track !== tr.id); P.tracks = P.tracks.filter(x => x !== tr);
+      if(sel && !byId(sel)) sel = null; cleanupPool(); commit(); renderTL(); renderInspector(); requestDraw();
+    }, true],
+  ];
+  menuEl = document.createElement('div'); menuEl.className = 'menu'; menuEl.setAttribute('role', 'menu');
+  for(const [label, ok, fn, danger] of items){
+    const b = document.createElement('button'); b.textContent = label; b.disabled = !ok; b.setAttribute('role', 'menuitem'); if(danger) b.className = 'danger';
+    b.onclick = () => { closeMenu(); fn(); }; menuEl.appendChild(b);
+  }
+  document.body.appendChild(menuEl);
+  const r = btnEl.getBoundingClientRect(), mh = menuEl.offsetHeight;
+  menuEl.style.left = Math.min(r.left, innerWidth - menuEl.offsetWidth - 8) + 'px';
+  menuEl.style.top = (r.bottom + mh + 8 > innerHeight ? r.top - mh - 4 : r.bottom + 4) + 'px';
+  menuEl.querySelector('button:not(:disabled)')?.focus();
+}
 function renderTL(){
   if(!inited) return;
+  buildRows();
   const w = Math.ceil(Math.max((total() + 8) * pps, tlscroll.clientWidth - TH()));
   tlinner.style.width = (w + TH()) + 'px';
-  for(const tr of TRACKS) lanes[tr].innerHTML = '';
   for(const c of P.clips) if(lanes[c.track]) lanes[c.track].appendChild(clipEl(c));
-  updTrackBtns(); drawRuler(); updPlayhead(); updTime();
+  drawRuler(); updPlayhead(); updTime();
 }
 function clipEl(c){
   const m = media.get(c.media), d = document.createElement('div');
   d.className = `clip ${c.type}` + (c.id === sel ? ' sel' : ''); d.dataset.id = c.id;
   posClip(d, c);
-  const name = c.type === 'text' ? (c.tx.content.split('\n')[0] || 'Tekst') : (m ? m.name : 'Bestand ontbreekt');
+  const name = c.type === 'text' ? (c.tx.content.split('\n')[0] || c.tx.sub || 'Tekst') : (m ? m.name : 'Bestand ontbreekt');
   d.innerHTML = '<span class="cl"></span><span class="eg l"></span><span class="eg r"></span>';
   d.querySelector('.cl').textContent = name; d.title = name;
   if(m && m.thumb && (c.type === 'video' || c.type === 'image')) d.style.backgroundImage = `url(${m.thumb})`;
@@ -1517,7 +1706,7 @@ function posClip(d, c){ d.style.left = c.start * pps + 'px'; d.style.width = Mat
 function waveform(c, m){
   const cw = Math.max(2, Math.min(3000, Math.round(c.dur * pps))), ch = 40, k = c.type === 'audio' ? 1 : .9;
   const cnv = document.createElement('canvas'); cnv.className = 'wf'; cnv.width = cw; cnv.height = ch;
-  const x = cnv.getContext('2d'); x.fillStyle = c.type === 'audio' ? 'rgba(255,255,255,.85)' : 'rgba(255,255,255,.75)';
+  const x = cnv.getContext('2d'); x.fillStyle = 'rgba(255,255,255,.8)';
   const pk = m.peaks, gain = Math.min(1.6, c.vol / 100);
   for(let i = 0; i < cw; i++){
     const a = Math.floor((c.in + i / cw * c.dur * c.speed) * 50), b = Math.max(a + 1, Math.floor((c.in + (i + 1) / cw * c.dur * c.speed) * 50));
@@ -1571,15 +1760,8 @@ $('#tZoomIn').onclick = () => zoomTo(pps * 1.5);
 $('#tZoomOut').onclick = () => zoomTo(pps / 1.5);
 $('#tFit').onclick = fitZoom;
 $('#tSnap').onclick = () => { snapOn = !snapOn; $('#tSnap').classList.toggle('on', snapOn); $('#tSnap').setAttribute('aria-pressed', snapOn); };
-
-/* spoorknoppen */
-function updTrackBtns(){
-  $$('[data-hide]').forEach(b => { const off = !!P.hide[b.dataset.hide]; b.innerHTML = off ? ICON.eyeOff : ICON.eye; b.classList.toggle('off', off); b.title = off ? 'Spoor tonen' : 'Spoor verbergen'; });
-  $$('[data-mute]').forEach(b => { const off = !!P.mute[b.dataset.mute]; b.innerHTML = off ? ICON.mute : ICON.vol; b.classList.toggle('off', off); b.title = off ? 'Geluid aan' : 'Geluid uit'; });
-  TRACKS.forEach(tr => { lanes[tr].style.opacity = P.hide[tr] ? .45 : ''; });
-}
-$$('[data-hide]').forEach(b => b.onclick = () => { const k = b.dataset.hide; P.hide[k] = !P.hide[k]; commit(); updTrackBtns(); requestDraw(); });
-$$('[data-mute]').forEach(b => b.onclick = () => { const k = b.dataset.mute; P.mute[k] = !P.mute[k]; commit(); updTrackBtns(); requestDraw(); });
+$('#tAddLayer').onclick = () => { addTrack('v'); commit(); renderTL(); toast('Nieuwe laag bovenaan toegevoegd'); };
+$('#tAddAudio').onclick = () => { addTrack('a'); commit(); renderTL(); toast('Nieuw audiospoor toegevoegd'); };
 
 /* magnetisch uitlijnen */
 const snapLine = document.createElement('div'); snapLine.className = 'snapl'; snapLine.hidden = true; tlinner.appendChild(snapLine);
@@ -1604,9 +1786,10 @@ function snapMove(s, dur, exclude){
 
 /* klikken en slepen op de tijdlijn */
 let drag = null, scrub = null;
-const laneTime = e => (e.clientX - lanes.V1.getBoundingClientRect().left) / pps;
+const laneTime = e => (e.clientX - rulerLane.getBoundingClientRect().left) / pps;
 tlinner.addEventListener('pointerdown', e => {
   if(e.button > 0 || exporting) return;
+  if(e.target.closest('.th')) return;
   const cd = e.target.closest('.clip');
   if(cd){
     e.preventDefault();
@@ -1618,7 +1801,7 @@ tlinner.addEventListener('pointerdown', e => {
     return;
   }
   const lane = e.target.closest('.lane'); if(!lane) return;
-  const isRuler = !!e.target.closest('#ruler');
+  const isRuler = lane === rulerLane;
   if(!isRuler && sel){ select(null); }
   if(isRuler || e.pointerType !== 'touch'){
     e.preventDefault(); scrub = {live: true}; lane.setPointerCapture(e.pointerId); seek(laneTime(e));
@@ -1635,7 +1818,7 @@ tlinner.addEventListener('pointermove', e => {
     let tr = c.track;
     const row = document.elementFromPoint(e.clientX, e.clientY);
     const rr = row && row.closest('.trow[data-t]');
-    if(rr && KIND[c.type].includes(rr.dataset.t)) tr = rr.dataset.t;
+    if(rr && accepts(rr.dataset.t, c.type)) tr = rr.dataset.t;
     const s = snapMove(Math.max(0, o.start + dt), c.dur, c.id);
     let f = fitInTrack(tr, s, c.dur, c.id);
     if(f == null){ tr = c.track; f = fitInTrack(tr, s, c.dur, c.id); }
@@ -1666,11 +1849,11 @@ tlinner.addEventListener('pointerup', endDrag); tlinner.addEventListener('pointe
 tlinner.addEventListener('dblclick', e => { const cd = e.target.closest('.clip'); if(cd){ select(cd.dataset.id); setTab('clip'); } });
 
 /* ---------- bewerkingen ---------- */
-function select(id){
+function select(id, openTab = true){
   sel = id;
   $$('.clip').forEach(d => d.classList.toggle('sel', d.dataset.id === id));
   renderInspector(); requestDraw();
-  if(id) setTab('clip');
+  if(id && openTab) setTab('clip');
 }
 function splitAt(){
   const at = t; let targets;
@@ -1694,7 +1877,7 @@ function delSel(ripple){
   P.clips = P.clips.filter(x => x !== c); dropPlayer(c.id);
   if(ripple){
     const e = end(c), d = c.dur;
-    for(const tr of TRACKS){
+    for(const tr of P.tracks.map(x => x.id)){
       const later = P.clips.filter(x => x.track === tr && x.start >= e - EPS);
       if(!later.length) continue;
       if(tr !== c.track){
@@ -1713,13 +1896,18 @@ function dupSel(){
   let s = fitInTrack(c.track, end(c), c.dur, null); if(s == null) s = trackEnd(c.track);
   n.start = s; P.clips.push(n); commit(); renderTL(); select(n.id);
 }
+function addTextClip(tx, at = t, dur = 3, focus = true){
+  const tr = freeVisualTrack(at, dur);
+  const c = newClip('text', tr, at, dur); Object.assign(c.tx, tx || {});
+  if(!tx && P.fmt === '9:16') c.tx.y = .72;
+  P.clips.push(c);
+  return c;
+}
 function addText(){
-  let s = fitInTrack('T1', t, 3, null); if(s == null) s = trackEnd('T1');
-  const c = newClip('text', 'T1', s, 3); P.clips.push(c);
-  if(P.fmt === '9:16') c.tx.y = .72;
+  const c = addTextClip(null);
   commit(); renderTL(); select(c.id); setTab('clip');
   setTimeout(() => { const ta = $('#vclip textarea'); if(ta){ ta.focus(); ta.select(); } }, 30);
-  if(t < s || t >= end(c)) seek(s + .5);
+  seek(c.start + .5);
 }
 $('#tSplit').onclick = splitAt; $('#tDel').onclick = () => delSel(false); $('#tRipple').onclick = () => delSel(true);
 $('#tDup').onclick = dupSel; $('#tText').onclick = addText;
@@ -1747,7 +1935,7 @@ function renderBin(){
     it.innerHTML = `<div class="bt"></div><div style="min-width:0"><div class="bn"></div><div class="bm">${meta}</div></div><div class="ba"><button class="btn icon" data-add title="Achteraan de tijdlijn zetten" aria-label="Toevoegen aan tijdlijn">${ICON.plus}</button><button class="btn icon" data-del title="Uit project verwijderen" aria-label="Verwijderen">${ICON.trash}</button></div>`;
     it.querySelector('.bn').textContent = m.name; it.title = m.name;
     const bt = it.querySelector('.bt'); if(m.thumb) bt.style.backgroundImage = `url(${m.thumb})`; else bt.innerHTML = ICON.audio;
-    it.querySelector('[data-add]').onclick = () => { addToTimeline(m); updEmpty(); toast(`${m.name} toegevoegd aan ${KIND[m.type][0].replace('V', 'Video ').replace('A', 'Audio ')}`); };
+    it.querySelector('[data-add]').onclick = () => { const c = addToTimeline(m); updEmpty(); toast(`${m.name} toegevoegd aan ${trackOf(c.track).name}`); };
     it.querySelector('[data-del]').onclick = async () => {
       const used = P.clips.filter(c => c.media === m.id).length;
       if(!await ask(`“${m.name}” verwijderen?`, used ? `Dit bestand staat ${used}× op de tijdlijn; die clips worden ook verwijderd.` : '', 'Verwijderen')) return;
@@ -1773,7 +1961,7 @@ window.addEventListener('pointermove', e => {
   ghost.style.left = e.clientX + 12 + 'px'; ghost.style.top = e.clientY + 8 + 'px';
   const m = media.get(bdrag.id), rr = document.elementFromPoint(e.clientX, e.clientY)?.closest('.trow[data-t]');
   $$('.trow.drop').forEach(r => r.classList.remove('drop'));
-  if(rr && KIND[m.type].includes(rr.dataset.t)) rr.classList.add('drop');
+  if(rr && accepts(rr.dataset.t, m.type)) rr.classList.add('drop');
 });
 window.addEventListener('pointerup', e => {
   if(!bdrag) return;
@@ -1781,7 +1969,7 @@ window.addEventListener('pointerup', e => {
   $$('.trow.drop').forEach(r => r.classList.remove('drop'));
   if(!b.on) return;
   const m = media.get(b.id), rr = document.elementFromPoint(e.clientX, e.clientY)?.closest('.trow[data-t]');
-  if(rr && KIND[m.type].includes(rr.dataset.t)){ addToTimeline(m, true, Math.max(0, laneTime(e)), rr.dataset.t); updEmpty(); }
+  if(rr && accepts(rr.dataset.t, m.type)){ addToTimeline(m, true, Math.max(0, laneTime(e)), rr.dataset.t); updEmpty(); }
 });
 
 /* ---------- inspector ---------- */
@@ -1807,21 +1995,26 @@ function chips(items, cur, on){
   items.forEach(([v, l]) => { const b = document.createElement('button'); b.className = 'chip'; b.textContent = l; b.setAttribute('aria-pressed', v === cur); b.onclick = () => { on(v); box.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x === b)); }; box.appendChild(b); });
   return box;
 }
-function btn(html, fn, cls = 'btn'){ const b = el(`<button class="${cls}">${html}</button>`); b.onclick = fn; return b; }
+function btn(html, fn, cls = 'btn', title = ''){ const b = el(`<button class="${cls}">${html}</button>`); if(title){ b.title = title; b.setAttribute('aria-label', title); } b.onclick = fn; return b; }
+function toggleRow(label, get, set){
+  const t2 = el(`<label class="toggle"><input type="checkbox"> ${label}</label>`), i = t2.querySelector('input');
+  i.checked = get(); i.onchange = () => { set(i.checked); requestDraw(); commit(); }; return t2;
+}
 const sgn = v => (v > 0 ? '+' : '') + Math.round(v);
+const deg = v => sgn(v) + '°';
 function liteTL(){ renderTL(); }
 function renderInspector(){
   const pane = $('#vclip'); pane.innerHTML = '';
   const c = sel && byId(sel);
   if(!c){
     pane.appendChild(el(`<p class="hint">Selecteer een clip op de tijdlijn (of klik op het beeld) om hem aan te passen.</p>`));
-    pane.appendChild(group('Sneltoetsen', el(`<dl class="kv"><dt>Spatie</dt><dd>afspelen / pauze</dd><dt>S</dt><dd>splitsen</dd><dt>Delete</dt><dd>verwijderen</dd><dt>Shift+Delete</dt><dd>verwijderen + gat dichten</dd><dt>T</dt><dd>tekst toevoegen</dd><dt>← →</dt><dd>beeldje verder / terug</dd><dt>Ctrl+D</dt><dd>dupliceren</dd><dt>Ctrl+scroll</dt><dd>tijdlijn zoomen</dd></dl>`)));
+    pane.appendChild(group('Sneltoetsen', el(`<dl class="kv"><dt>Spatie</dt><dd>afspelen / pauze</dd><dt>S</dt><dd>splitsen</dd><dt>Delete</dt><dd>verwijderen</dd><dt>Shift+Delete</dt><dd>verwijderen + gat dichten</dd><dt>T</dt><dd>tekst toevoegen</dd><dt>F</dt><dd>volledig scherm</dd><dt>← →</dt><dd>beeldje verder / terug</dd><dt>Ctrl+D</dt><dd>dupliceren</dd><dt>Ctrl+scroll</dt><dd>tijdlijn zoomen</dd></dl>`)));
     return;
   }
   const m = media.get(c.media), col = {video: 'var(--c-video)', image: 'var(--c-image)', audio: 'var(--c-audio)', text: 'var(--c-text)'}[c.type];
   const head = el(`<div class="group"><div class="cliphead"><span class="dot" style="background:${col}"></span><b></b></div><span class="info"></span></div>`);
   head.querySelector('b').textContent = c.type === 'text' ? 'Tekst' : (m ? m.name : 'Bestand ontbreekt');
-  head.querySelector('.info').textContent = `${TYPE_NL[c.type]} · start ${fmtT(c.start)} · duur ${fmtT(c.dur)}`;
+  head.querySelector('.info').textContent = `${TYPE_NL[c.type]} · ${trackOf(c.track).name} · start ${fmtT(c.start)} · duur ${fmtT(c.dur)}`;
   pane.appendChild(head);
   const acts = el('<div class="row"></div>');
   acts.append(btn('Splitsen', splitAt), btn('Dupliceren', dupSel), btn('Verwijderen', () => delSel(false)));
@@ -1834,32 +2027,69 @@ function renderInspector(){
     const ta = el('<textarea rows="3" aria-label="Tekst"></textarea>'); ta.value = X.content;
     ta.oninput = () => { X.content = ta.value; requestDraw(); const d = $(`.clip[data-id="${c.id}"] .cl`); if(d) d.textContent = ta.value.split('\n')[0] || 'Tekst'; };
     ta.onchange = commit;
-    pane.appendChild(group('Tekst', ta));
+    const sub = el('<input type="text" class="tinput" placeholder="Tweede regel (kleiner, optioneel)" aria-label="Tweede regel">'); sub.value = X.sub;
+    sub.oninput = () => { X.sub = sub.value; requestDraw(); }; sub.onchange = commit;
+    pane.appendChild(group('Tekst', ta, sub));
     const fonts = el('<div class="fonts"></div>');
     FONTS.forEach((f, i) => { const b = document.createElement('button'); b.className = 'fontbtn'; b.textContent = f[0]; b.style.fontFamily = `"${f[1]}", sans-serif`; b.style.fontWeight = f[2]; b.setAttribute('aria-pressed', i === X.font);
       b.onclick = () => { X.font = i; fonts.querySelectorAll('.fontbtn').forEach(x => x.setAttribute('aria-pressed', x === b)); loadFonts().then(requestDraw); requestDraw(); commit(); }; fonts.appendChild(b); });
-    pane.appendChild(group('Lettertype', fonts, slider('Grootte', () => X.size, v => X.size = v, 2, 25, .5, v => String(v), {def: 8})));
+    pane.appendChild(group('Lettertype', fonts,
+      chips([['left', 'Links'], ['center', 'Midden'], ['right', 'Rechts']], X.align, v => {
+        const b = drawBoxes.find(b => b.id === c.id);
+        if(b){ X.x = v === 'left' ? b.x0 : v === 'right' ? b.x1 : (b.x0 + b.x1) / 2; }
+        X.align = v; requestDraw(); commit();
+      }),
+      slider('Grootte', () => X.size, v => X.size = v, 2, 25, .5, v => String(v), {def: 8}),
+      slider('Dekking', () => X.opacity, v => X.opacity = v, 5, 100, 1, v => v + '%', {def: 100}),
+      slider('Draaien', () => X.rot, v => X.rot = v, -45, 45, 1, deg)));
     const sw = el('<div class="swatches"></div>');
     const updSw = () => sw.querySelectorAll('.sw').forEach(b => b.setAttribute('aria-pressed', b.dataset.c === X.color));
-    COLORS.forEach(cl => { const b = document.createElement('button'); b.className = 'sw'; b.style.background = cl; b.dataset.c = cl; b.setAttribute('aria-label', 'Kleur ' + cl); b.onclick = () => { X.color = cl; ci.value = cl; updSw(); requestDraw(); commit(); }; sw.appendChild(b); });
-    const ci = document.createElement('input'); ci.type = 'color'; ci.value = X.color; ci.title = 'Eigen kleur';
+    COLORS.forEach(cl => { const b = document.createElement('button'); b.className = 'sw'; b.style.background = cl; b.dataset.c = cl; b.setAttribute('aria-label', 'Tekstkleur ' + cl); b.onclick = () => { X.color = cl; ci.value = cl; updSw(); requestDraw(); commit(); }; sw.appendChild(b); });
+    const ci = document.createElement('input'); ci.type = 'color'; ci.value = X.color; ci.title = 'Eigen tekstkleur';
     ci.oninput = () => { X.color = ci.value; updSw(); requestDraw(); }; ci.onchange = commit; sw.appendChild(ci); updSw();
-    const bgT = el('<label class="toggle"><input type="checkbox"> Achtergrondvlak</label>'); const bgI = bgT.querySelector('input'); bgI.checked = X.bg; bgI.onchange = () => { X.bg = bgI.checked; requestDraw(); commit(); };
-    pane.appendChild(group('Kleur', sw, bgT));
-    const pos = chips([['top', 'Boven'], ['mid', 'Midden'], ['low', 'Onder'], ['sub', 'Ondertitel']], null, v => { X.x = .5; X.y = {top: .14, mid: .5, low: .82, sub: .9}[v]; requestDraw(); commit(); });
+    const bgRow = el('<div class="swatches"></div>');
+    const bgAuto = btn('Automatisch', () => { X.bgColor = ''; requestDraw(); commit(); }, 'chip');
+    const bgi = document.createElement('input'); bgi.type = 'color'; bgi.value = X.bgColor || '#000000'; bgi.title = 'Kleur van het vlak';
+    bgi.oninput = () => { X.bgColor = bgi.value; requestDraw(); }; bgi.onchange = commit;
+    bgRow.append(bgAuto, bgi);
+    pane.appendChild(group('Kleur', sw));
+    pane.appendChild(group('Achtergrond', chips(BOXES, X.box, v => { X.box = v; requestDraw(); commit(); }), bgRow));
+    const pos = chips([['top', 'Boven'], ['mid', 'Midden'], ['low', 'Onder'], ['sub', 'Ondertitel']], null, v => { X.align = 'center'; X.x = .5; X.y = {top: .14, mid: .5, low: .82, sub: .9}[v]; requestDraw(); commit(); renderInspector(); });
     pane.appendChild(group('Positie', pos, el('<p class="hint">Of sleep de tekst in het beeld naar de juiste plek.</p>')));
     pane.appendChild(group('Animatie', chips(ANIMS, X.anim, v => { X.anim = v; requestDraw(); commit(); })));
   }
 
   if(c.type === 'video' || c.type === 'image'){
-    const tf = c.tf, fx = c.fx;
+    const tf = c.tf, fx = c.fx, cr = tf.crop;
+    pane.appendChild(group('Indeling',
+      chips(LAYOUTS.map(([k, l]) => [k, l]), (LAYOUTS.find(L => JSON.stringify(L[2]) === JSON.stringify(tf.box)) || [])[0], k => {
+        tf.box = (LAYOUTS.find(L => L[0] === k) || [])[2] || null; tf.x = 0; tf.y = 0; tf.scale = 100; requestDraw(); commit(); renderInspector();
+      }),
+      el('<p class="hint">Voor/na naast elkaar: zet twee clips op verschillende lagen en geef de ene “Linkerhelft” en de andere “Rechterhelft” (staand: boven- en onderhelft).</p>')));
+    const rotRow = el('<div class="row"></div>');
+    rotRow.append(
+      btn(ICON.rotL, () => { tf.rot = ((Math.round(tf.rot / 90) * 90 - 90 + 540) % 360) - 180; requestDraw(); commit(); renderInspector(); }, 'btn icon', '90° linksom'),
+      btn(ICON.rotR, () => { tf.rot = ((Math.round(tf.rot / 90) * 90 + 90 + 540) % 360) - 180; requestDraw(); commit(); renderInspector(); }, 'btn icon', '90° rechtsom'),
+      btn(ICON.flipH + '<span>Spiegel</span>', () => { tf.flipH = !tf.flipH; requestDraw(); commit(); renderInspector(); }, 'btn' + (tf.flipH ? ' on' : ''), 'Horizontaal spiegelen'),
+      btn(ICON.flipV + '<span>Kantel</span>', () => { tf.flipV = !tf.flipV; requestDraw(); commit(); renderInspector(); }, 'btn' + (tf.flipV ? ' on' : ''), 'Verticaal spiegelen'));
+    pane.appendChild(group('Draaien & spiegelen', rotRow, slider('Draaien', () => tf.rot, v => tf.rot = v, -180, 180, .5, deg)));
     pane.appendChild(group('Beeld',
       chips([['cover', 'Vullen'], ['contain', 'Passend']], tf.fit, v => { tf.fit = v; requestDraw(); commit(); }),
       slider('Schaal', () => tf.scale, v => tf.scale = v, 20, 300, 1, v => v + '%', {def: 100}),
       slider('Horizontaal', () => tf.x, v => tf.x = v, -100, 100, 1, sgn),
       slider('Verticaal', () => tf.y, v => tf.y = v, -100, 100, 1, sgn),
       slider('Langzaam in-/uitzoomen', () => tf.kb, v => tf.kb = v, -40, 40, 1, v => sgn(v) + '%'),
+      toggleRow('Vervaagde achtergrond (handig voor staande video in een liggend beeld)', () => tf.blurBg, v => { tf.blurBg = v; if(v && tf.fit === 'cover') { tf.fit = 'contain'; renderInspector(); } }),
       el('<p class="hint">Sleep het beeld in het voorbeeld om het te verschuiven.</p>')));
+    pane.appendChild(group('Bijsnijden',
+      slider('Links', () => cr.l, v => cr.l = Math.min(v, 90 - cr.r), 0, 45, .5, v => v + '%'),
+      slider('Rechts', () => cr.r, v => cr.r = Math.min(v, 90 - cr.l), 0, 45, .5, v => v + '%'),
+      slider('Boven', () => cr.t, v => cr.t = Math.min(v, 90 - cr.b), 0, 45, .5, v => v + '%'),
+      slider('Onder', () => cr.b, v => cr.b = Math.min(v, 90 - cr.t), 0, 45, .5, v => v + '%')));
+    pane.appendChild(group('Laag',
+      slider('Dekking', () => tf.opacity, v => tf.opacity = v, 0, 100, 1, v => v + '%', {def: 100}),
+      el('<span class="glabel" style="margin-top:4px">Overvloeimodus</span>'),
+      chips(BLENDS, tf.blend, v => { tf.blend = v; requestDraw(); commit(); })));
     pane.appendChild(group('Kleur',
       slider('Helderheid', () => fx.bright, v => fx.bright = v, -100, 100, 1, sgn),
       slider('Contrast', () => fx.contrast, v => fx.contrast = v, -100, 100, 1, sgn),
@@ -1876,14 +2106,14 @@ function renderInspector(){
   }
 
   if(c.type === 'image' || c.type === 'text'){
-    const nb = neighbors(c), maxD = Math.min(60, (nb.nextStart === Infinity ? 60 : nb.nextStart - c.start));
+    const nb = neighbors(c), maxD = Math.min(600, (nb.nextStart === Infinity ? Math.max(60, total()) : nb.nextStart - c.start));
     pane.appendChild(group('Duur', slider('Duur', () => c.dur, v => c.dur = v, .5, Math.max(.6, maxD), .1, fmtS, {def: c.type === 'image' ? 4 : 3, live: () => posClipId(c), after})));
   }
 
   pane.appendChild(group(c.type === 'audio' ? 'In- en uitfaden' : 'Overgang',
     slider(c.type === 'audio' ? 'Infaden' : 'Inloop (vanuit zwart)', () => c.fadeIn, v => c.fadeIn = Math.min(v, c.dur - c.fadeOut), 0, fadeMax(), .1, fmtS, {after}),
     slider(c.type === 'audio' ? 'Uitfaden' : 'Uitloop (naar zwart)', () => c.fadeOut, v => c.fadeOut = Math.min(v, c.dur - c.fadeIn), 0, fadeMax(), .1, fmtS, {after}),
-    c.type === 'video' || c.type === 'image' ? el('<p class="hint">Vloeiende overgang tussen twee clips: zet de tweede clip op Video 2, een stukje over de eerste heen, en geef hem een inloop.</p>') : null));
+    c.type === 'video' || c.type === 'image' ? el('<p class="hint">Vloeiende overgang tussen twee clips: zet de tweede clip op een laag erboven, een stukje over de eerste heen, en geef hem een inloop.</p>') : null));
 
   if(isMediaClip(c)){
     pane.appendChild(group('Geluid', slider('Volume', () => c.vol, v => c.vol = v, 0, 200, 1, v => v + '%', {def: 100, after}),
@@ -1900,6 +2130,76 @@ function setSpeed(c, v){
   commit(); renderTL(); renderInspector(); requestDraw();
 }
 
+/* ---------- sjablonen ---------- */
+const TEXT_TPL = [
+  {id: 'title', name: 'Grote titel', desc: 'Groot, midden in beeld', dur: 3, tx: {content: 'TITEL VAN JE VIDEO', font: 3, size: 15, x: .5, y: .5, box: 'none', anim: 'pop'}},
+  {id: 'band', name: 'Titel op band', desc: 'Strakke titel op een brede balk', dur: 3, tx: {content: 'Titel', sub: 'korte ondertitel', font: 0, size: 9, x: .5, y: .5, box: 'band', anim: 'rise'}},
+  {id: 'lower', name: 'Naambalk', desc: 'Naam + functie links onderin', dur: 4, tx: {content: 'Naam', sub: 'Functie of omschrijving', font: 0, size: 6, x: .06, y: .8, align: 'left', box: 'bar', anim: 'slide'}},
+  {id: 'subtitle', name: 'Ondertitel', desc: 'Klein, onderaan, voor gesproken tekst', dur: 3, tx: {content: 'Wat er gezegd wordt…', font: 0, size: 5, x: .5, y: .9, box: 'box', anim: 'none'}},
+  {id: 'step', name: 'Stap / hoofdstuk', desc: 'Nummer met korte uitleg, linksboven', dur: 3, tx: {content: 'Stap 1', sub: 'Wat je nu gaat doen', font: 5, size: 7, x: .06, y: .14, align: 'left', box: 'box', anim: 'slide'}},
+  {id: 'quote', name: 'Citaat', desc: 'Sierlijk, midden in beeld', dur: 4, tx: {content: '“Mooie woorden hier”', font: 1, size: 8, x: .5, y: .5, box: 'none', anim: 'fade'}},
+  {id: 'hand', name: 'Handgeschreven', desc: 'Schuin, alsof het geschreven wordt', dur: 3, tx: {content: 'Kijk eens!', font: 2, size: 11, x: .5, y: .3, box: 'none', anim: 'type', rot: -6, color: '#f0a43a'}},
+  {id: 'end', name: 'Eindkaart', desc: 'Afsluiter met oproep', dur: 4, end: true, tx: {content: 'Bedankt voor het kijken!', sub: 'Volg voor meer', font: 5, size: 8, x: .5, y: .5, box: 'none', anim: 'rise'}},
+  {id: 'wm', name: 'Watermerk', desc: 'Klein logo-tekstje, hele video', full: true, tx: {content: '© jouw naam', font: 0, size: 3.2, x: .965, y: .945, align: 'right', box: 'none', anim: 'none', opacity: 70}},
+];
+const PROJ_TPL = [
+  {id: 'yt', name: 'YouTube-video', desc: 'Liggend 16:9 · titel, naambalk, eindkaart en watermerk', fmt: '16:9', items: ['title', 'lower@3', 'end', 'wm']},
+  {id: 'reel', name: 'Reel / Short', desc: 'Staand 9:16 · titel bovenin en ondertitels', fmt: '9:16', items: ['title9', 'subtitle@3', 'wm']},
+  {id: 'ba', name: 'Voor & na', desc: 'Staand 9:16 · “VOOR” boven, “NA” onder', fmt: '9:16', items: ['before', 'after']},
+  {id: 'howto', name: 'Uitleg in stappen', desc: 'Liggend 16:9 · drie stappen en een eindkaart', fmt: '16:9', items: ['title', 'step@3', 'step2@8', 'step3@13', 'end']},
+];
+const EXTRA_TPL = {
+  title9: {dur: 3, tx: {content: 'TITEL', font: 3, size: 16, x: .5, y: .16, box: 'none', anim: 'pop'}},
+  before: {full: true, tx: {content: 'VOOR', font: 3, size: 9, x: .06, y: .06, align: 'left', box: 'box', anim: 'none'}},
+  after: {full: true, tx: {content: 'NA', font: 3, size: 9, x: .06, y: .56, align: 'left', box: 'box', anim: 'none'}},
+  step2: {dur: 3, tx: {content: 'Stap 2', sub: 'Wat je nu gaat doen', font: 5, size: 7, x: .06, y: .14, align: 'left', box: 'box', anim: 'slide'}},
+  step3: {dur: 3, tx: {content: 'Stap 3', sub: 'Wat je nu gaat doen', font: 5, size: 7, x: .06, y: .14, align: 'left', box: 'box', anim: 'slide'}},
+};
+function tplPreview(T){
+  const X = Object.assign({font: 0, size: 8, color: '#ffffff', box: 'box', align: 'center', sub: ''}, T.tx), F = FONTS[X.font];
+  const pos = `left:${X.align === 'left' ? X.x * 100 + '%' : X.align === 'right' ? 'auto' : X.x * 100 + '%'};${X.align === 'right' ? 'right:' + (100 - X.x * 100) + '%;' : ''}top:${X.y * 100}%;transform:translate(${X.align === 'center' ? '-50%' : '0'},-50%)`;
+  const bg = X.box === 'none' ? '' : X.box === 'band' ? 'background:rgba(0,0,0,.6);left:0!important;right:0;text-align:center;transform:translateY(-50%)!important;' : 'background:rgba(0,0,0,.6);';
+  const bar = X.box === 'bar' ? 'border-left:3px solid var(--accent);' : '';
+  return `<div class="tplv"><span style="${pos};${bg}${bar}font-family:'${F[1]}';font-weight:${F[2]};font-size:${Math.max(6, X.size * .9)}px;color:${X.color};text-align:${X.align}">${esc(X.content)}${X.sub ? `<small>${esc(X.sub)}</small>` : ''}</span></div>`;
+}
+const esc = s => String(s).replace(/[&<>"]/g, ch => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[ch]));
+function placeTpl(T, at){
+  const L = Math.max(total(), 3);
+  if(T.full) return addTextClip(T.tx, 0, L, false);
+  if(T.end){ const s = Math.max(0, total() > T.dur ? total() - T.dur : 0); return addTextClip(T.tx, s, T.dur, false); }
+  return addTextClip(T.tx, at, T.dur, false);
+}
+function renderTpl(){
+  const pane = $('#vtpl'); pane.innerHTML = '';
+  const g1 = group('Tekstsjablonen'); const grid = el('<div class="tplgrid"></div>');
+  for(const T of TEXT_TPL){
+    const b = el(`<button class="tpl">${tplPreview(T)}<b>${T.name}</b><small>${T.desc}</small></button>`);
+    b.onclick = () => { const c = placeTpl(T, t); commit(); renderTL(); select(c.id); if(!T.full && !T.end) seek(c.start + .6); else seek(c.start + Math.min(.6, c.dur / 2)); toast(`${T.name} toegevoegd op ${trackOf(c.track).name}`); };
+    grid.appendChild(b);
+  }
+  g1.appendChild(grid); g1.appendChild(el('<p class="hint">Sjablonen komen op de afspeelkop, op de bovenste laag die daar vrij is. Watermerk en eindkaart passen zich aan de lengte van je video aan.</p>'));
+  pane.appendChild(g1);
+  const g2 = group('Projectsjablonen');
+  for(const T of PROJ_TPL){
+    const b = el(`<button class="ptpl"><b>${T.name}</b><small>${T.desc}</small></button>`);
+    b.onclick = () => applyProjTpl(T);
+    g2.appendChild(b);
+  }
+  g2.appendChild(el('<p class="hint">Zet het formaat en voegt de teksten toe aan je huidige project. Je eigen clips blijven staan; met Ctrl+Z draai je het terug.</p>'));
+  pane.appendChild(g2);
+}
+function applyProjTpl(T){
+  P.fmt = T.fmt;
+  for(const it of T.items){
+    const [k, atS] = it.split('@'), base = TEXT_TPL.find(x => x.id === k) || EXTRA_TPL[k];
+    if(!base) continue;
+    const tx = Object.assign({}, base.tx); if(T.fmt === '9:16' && k === 'subtitle') tx.y = .8;
+    placeTpl(Object.assign({}, base, {tx}), atS ? +atS : 0);
+  }
+  commit(); renderAll(); fitZoom(); seek(.6);
+  toast(`Sjabloon “${T.name}” toegepast` + (P.clips.some(c => c.type !== 'text') ? '' : ' — importeer nu je beelden'));
+}
+
 /* ---------- project-tab ---------- */
 function renderProject(){
   $('#vName').value = P.name;
@@ -1913,7 +2213,7 @@ function renderProject(){
 }
 function renderStats(){
   const [W, H] = projDims();
-  $('#vstats').innerHTML = `<dt>Lengte</dt><dd>${fmtT(total())}</dd><dt>Clips</dt><dd>${P.clips.length}</dd><dt>Bestanden</dt><dd>${media.size}</dd><dt>Formaat</dt><dd>${W}×${H}</dd>`;
+  $('#vstats').innerHTML = `<dt>Lengte</dt><dd>${fmtT(total())}</dd><dt>Clips</dt><dd>${P.clips.length}</dd><dt>Lagen</dt><dd>${vTracks().length} beeld · ${aTracks().length} audio</dd><dt>Bestanden</dt><dd>${media.size}</dd><dt>Formaat</dt><dd>${W}×${H}</dd>`;
 }
 $('#vName').oninput = e => { P.name = e.target.value; $('#fileName').textContent = P.name || 'video'; };
 $('#vName').onchange = commit;
@@ -1925,7 +2225,7 @@ $('#vNewProj').onclick = async () => {
 };
 
 /* ---------- alles tekenen ---------- */
-function renderAll(){ renderBin(); renderTL(); renderInspector(); renderProject(); updEmpty(); fitFrame(); requestDraw(); }
+function renderAll(){ normalizeP(); renderBin(); renderTL(); renderInspector(); renderProject(); renderTpl(); updEmpty(); fitFrame(); requestDraw(); }
 
 /* ---------- exporteren ---------- */
 let downloadsP = null;
@@ -1944,6 +2244,7 @@ function updExpInfo(){
 }
 $('#vExportBtn').onclick = () => {
   if(!P.clips.length){ toast('Zet eerst iets op de tijdlijn.'); return; }
+  if(document.fullscreenElement) document.exitFullscreen().catch(() => {});
   pause(); $('#vExpName').value = (P.name || 'video').trim(); updExpInfo(); $('#vExpDlg').hidden = false; $('#vExpName').focus();
 };
 $('#vExpRes').onchange = updExpInfo;
@@ -2019,7 +2320,8 @@ if(!IN_ARTIFACT && navigator.mediaDevices && navigator.mediaDevices.getUserMedia
           const n = [...media.values()].filter(m => m.name.startsWith('Voice-over')).length + 1;
           const m = await probe(new File([blob], `Voice-over ${n}.webm`, {type: blob.type}), `Voice-over ${n}`);
           media.set(m.id, m); saveMedia(m); computePeaks(m); renderBin();
-          addToTimeline(m, true, at, 'A2'); toast('Voice-over toegevoegd op Audio 2');
+          let tr = aTracks().find(x => isFree(x.id, at, m.dur)); tr = tr ? tr.id : addTrack('a');
+          addToTimeline(m, true, at, tr); toast(`Voice-over toegevoegd op ${trackOf(tr).name}`);
         }catch(_){ toast('De opname kon niet worden verwerkt.'); }
       };
       vrec = {mr}; mr.start(); rb.querySelector('span').textContent = 'Stop opname'; rb.classList.add('on');
@@ -2043,6 +2345,7 @@ window.addEventListener('drop', e => { if(!vmode()) return; e.stopImmediatePropa
 window.addEventListener('paste', e => { if(!vmode()) return; const f = [...(e.clipboardData?.files || [])]; if(f.length){ e.stopImmediatePropagation(); e.preventDefault(); importFiles(f); } }, true);
 window.addEventListener('keydown', e => {
   if(!vmode()) return;
+  if(menuEl){ if(e.key === 'Escape'){ closeMenu(); e.stopImmediatePropagation(); } return; }
   if(!$('#vAsk').hidden){ if(e.key === 'Escape') $('#vAskNo').click(); e.stopImmediatePropagation(); return; }
   if(!$('#vExpDlg').hidden){ if(e.key === 'Escape') $('#vExpDlg').hidden = true; e.stopImmediatePropagation(); return; }
   if(exporting || !$('#vExpOv').hidden){ e.stopImmediatePropagation(); return; }
@@ -2055,6 +2358,8 @@ window.addEventListener('keydown', e => {
   else if(mod && k.toLowerCase() === 'd'){ e.preventDefault(); dupSel(); }
   else if(mod) return;
   else if(k === ' ' || k === 'k' || k === 'K'){ if(a && a.tagName === 'BUTTON' && k === ' ') a.blur(); e.preventDefault(); toggle(); }
+  else if(k === 'f' || k === 'F'){ e.preventDefault(); toggleFull(); }
+  else if(k === 'Escape' && vview.classList.contains('theater')){ toggleFull(); }
   else if(k === 's' || k === 'S'){ e.preventDefault(); splitAt(); }
   else if(k === 't' || k === 'T'){ e.preventDefault(); addText(); }
   else if(k === 'Delete' || k === 'Backspace'){ e.preventDefault(); delSel(e.shiftKey); }
@@ -2076,14 +2381,15 @@ async function init(){
   inited = true;
   new ResizeObserver(() => fitFrame()).observe(vscreen);
   new ResizeObserver(() => { renderTL(); }).observe(tlscroll);
-  setPlayIcon(); updTrackBtns();
+  setPlayIcon(); updFullBtn();
   try{ downloadsP = window.claude && window.claude.use ? window.claude.use('downloads').catch(() => null) : null; }catch(_){ downloadsP = null; }
   try{
     const recs = await store('media', 'readonly', s => s.getAll());
     for(const r of recs || []){ try{ const m = await probe(r.blob, r.name, r); media.set(m.id, m); if(!m.peaks) computePeaks(m); }catch(_){} }
     const saved = await store('kv', 'readonly', s => s.get('project'));
-    if(saved && saved.clips){ P = Object.assign(DEFP(), saved); P.clips = P.clips.filter(c => c.type === 'text' || media.has(c.media)); }
+    if(saved && saved.clips){ P = Object.assign(DEFP(), saved); normalizeP(); P.clips = P.clips.filter(c => c.type === 'text' || media.has(c.media)); }
   }catch(_){ $('#vSaveHint').textContent = 'Deze browser bewaart het project niet; exporteer je video voordat je het venster sluit.'; }
+  normalizeP();
   hist = []; hi = -1; commit();
   $('#fileName').textContent = P.name;
   renderAll(); loadFonts().then(requestDraw);
@@ -2097,7 +2403,7 @@ function setWS(w){
   try{ localStorage.setItem('lichtbak-ws', w); }catch(_){}
   const fn = $('#fileName');
   if(v){ photoName = {text: fn.textContent, title: fn.title}; fn.textContent = P.name; fn.title = ''; if(!inited) init(); else { fitFrame(); renderTL(); } }
-  else { pause(); if(photoName){ fn.textContent = photoName.text; fn.title = photoName.title; } window.dispatchEvent(new Event('resize')); }
+  else { pause(); if(isFull()) toggleFull(); if(photoName){ fn.textContent = photoName.text; fn.title = photoName.title; } window.dispatchEvent(new Event('resize')); }
 }
 $$('.ws button').forEach(b => b.onclick = () => setWS(b.dataset.ws));
 let startWS = 'foto'; try{ startWS = localStorage.getItem('lichtbak-ws') || 'foto'; }catch(_){}
