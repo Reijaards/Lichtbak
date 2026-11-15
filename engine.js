@@ -355,7 +355,7 @@ export class Renderer {
   }
   u(n){ return n in this._l ? this._l[n] : (this._l[n] = this.gl.getUniformLocation(this.prog, n)); }
   setImage(src){
-    const gl = this.gl, w = src.naturalWidth || src.width, h = src.naturalHeight || src.height;
+    const gl = this.gl, w = src.videoWidth || src.naturalWidth || src.width, h = src.videoHeight || src.naturalHeight || src.height;
     this.imgW = w; this.imgH = h;
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, this.tImg);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src);

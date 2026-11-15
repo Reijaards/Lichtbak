@@ -3,6 +3,7 @@ import {store} from './store.js';
 import * as E from './engine.js';
 import {makeSample} from './sample.js';
 import {setupBewerk} from './bewerk.js';
+import {setupCamera} from './camera.js';
 
 const $ = s => document.querySelector(s);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
@@ -24,7 +25,7 @@ async function decode(blob){
 const free = b => { try { b && b.close && b.close(); } catch(_){} };
 
 /* ================= state ================= */
-let photos = [], docs = [], BW = null;
+let photos = [], docs = [], BW = null, CAM = null;
 const thumbUrls = new Map();
 let selecting = false; const selected = new Set();
 let userPresets = [], clipboard = null, defaultText = null;
@@ -101,17 +102,17 @@ function updSelbar(){
   $('#selPaste').disabled = selected.size === 0 || !clipboard;
 }
 
-async function importOne(blob, name){
+async function importOne(blob, name, presetData = null){
   const bmp = await decode(blob);
   const w = bmp.width || bmp.naturalWidth, h = bmp.height || bmp.naturalHeight;
   const prev = await toBlob(scaleCanvas(bmp, 2048), 'image/jpeg', .92);
-  const thumbC = scaleCanvas(bmp, 480);
+  let thumbC = scaleCanvas(bmp, 480);
   free(bmp);
   let edit = null;
-  if(defaultText && defaultText.content.trim()){
-    edit = E.defaultEdit(); edit.text = E.clone(defaultText);
-    const x = thumbC.getContext('2d'); await E.loadFont(edit.text.font); E.drawText(x, thumbC.width, thumbC.height, edit.text);
-  }
+  if(presetData){ edit = E.applyGroups(E.defaultEdit(), presetData); }
+  if(defaultText && defaultText.content.trim()){ edit = edit || E.defaultEdit(); edit.text = E.clone(defaultText); }
+  if(presetData){ try { const tb = await decode(prev); thumbC = scaleCanvas(await E.renderToCanvas(getWR(), tb, edit, 900), 480); free(tb); presetThumbsDirty = true; } catch(_){} }
+  else if(edit){ const x = thumbC.getContext('2d'); await E.loadFont(edit.text.font); E.drawText(x, thumbC.width, thumbC.height, edit.text); }
   const rec = {id:uid(), name:(name || 'foto').replace(/\.[^.]+$/, ''), added:Date.now() + Math.random(), w, h, bytes:blob.size, edit, thumb:await toBlob(thumbC, 'image/jpeg', .85)};
   await store.addPhoto(rec, blob, prev);
   return rec;
@@ -134,9 +135,10 @@ async function importFiles(list){
 
 /* ================= views ================= */
 function showView(v){
-  ['library','editor','bewerk'].forEach(n => $('#' + n).hidden = n !== v);
+  ['library','editor','bewerk','camera'].forEach(n => $('#' + n).hidden = n !== v);
   $('#menu').hidden = true; $('#addMenu').hidden = true;
   if(v === 'bewerk') history.pushState({bewerk:true}, '');
+  if(v === 'camera') history.pushState({camera:true}, '');
 }
 
 /* ================= editor: open / close ================= */
@@ -185,6 +187,7 @@ async function closeEditor(){
 }
 window.addEventListener('popstate', () => {
   if(!$('#dlg').hidden && !$('#dlg').dataset.busy){ $('#dlg').hidden = true; if(!$('#editor').hidden) history.pushState({editor:true}, ''); return; }
+  if(!$('#camera').hidden){ CAM.close(); return; }
   if(!$('#bewerk').hidden){ BW.close(); return; }
   if(!$('#editor').hidden) closeEditor();
 });
@@ -958,8 +961,14 @@ document.addEventListener('pointerdown', e => { const m = $('#addMenu'); if(!m.h
 $('#addMenu').onclick = e => { const a = e.target.dataset.add; if(!a) return; $('#addMenu').hidden = true;
   if(a === 'photos') fileIn.click();
   if(a === 'blank') BW.newBlankDlg();
+  if(a === 'camera') CAM.open();
+  if(a === 'native') nativeCamera();
   if(a === 'sample') $('#sampleBtn').click(); };
 $('#emptyImport').onclick = () => fileIn.click();
+$('#camBtn').onclick = () => CAM.open();
+$('#emptyCam').onclick = () => CAM.open();
+function nativeCamera(){ $('#nativeCam').click(); }
+$('#nativeCam').onchange = async () => { const f = [...$('#nativeCam').files]; $('#nativeCam').value = ''; if(!f.length) return; const done = await importFiles(f); if(done.length === 1) openEditor(done[0].id); };
 fileIn.onchange = async () => { const f = [...fileIn.files]; fileIn.value = ''; const done = await importFiles(f); if(done.length === 1) openEditor(done[0].id); };
 $('#sampleBtn').onclick = async () => { const b = await toBlob(makeSample(), 'image/jpeg', .93); const rec = await importOne(b, 'voorbeeldfoto'); await loadLibrary(); openEditor(rec.id); };
 $('#selectBtn').onclick = () => setSelecting(!selecting);
@@ -1056,7 +1065,13 @@ async function init(){
   BW = setupBewerk({store, E, toast, dialog, confirmDlg, el, uid, toBlob, decode, free, showView,
     reloadLibrary:loadLibrary, saveOrShare, photos:() => photos, thumbURL, renderPhoto,
     importBlob:async (b, name) => { const r = await importOne(b, name); await loadLibrary(); return r; }});
+  CAM = setupCamera({toast, el, toBlob, showView, thumbURL, reloadLibrary:loadLibrary, nativeCamera,
+    userPresets:() => userPresets,
+    importPhoto:async (b, name, preset) => { const r = await importOne(b, name, preset); photos.unshift(r); try { await navigator.storage?.persist?.(); } catch(_){} return r; },
+    openPhoto:async id => { await loadLibrary(); openEditor(id); }});
+  const wantCam = new URLSearchParams(location.search).get('camera');
   await loadLibrary();
   await checkInbox();
+  if(wantCam) CAM.open();
 }
 init();
