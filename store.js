@@ -1,15 +1,16 @@
 // Lichtbak — lokale opslag (IndexedDB). Foto's verlaten het apparaat nooit.
-const DB = 'lichtbak', VER = 1;
+const DB = 'lichtbak', VER = 2;
 let dbp = null;
 function open(){
   return dbp || (dbp = new Promise((res, rej) => {
     const r = indexedDB.open(DB, VER);
     r.onupgradeneeded = () => {
-      const d = r.result;
-      d.createObjectStore('photos', {keyPath:'id'});
-      d.createObjectStore('originals');
-      d.createObjectStore('previews');
-      d.createObjectStore('meta');
+      const d = r.result, has = n => d.objectStoreNames.contains(n);
+      if(!has('photos')) d.createObjectStore('photos', {keyPath:'id'});
+      if(!has('originals')) d.createObjectStore('originals');
+      if(!has('previews')) d.createObjectStore('previews');
+      if(!has('meta')) d.createObjectStore('meta');
+      if(!has('docs')) d.createObjectStore('docs', {keyPath:'id'});
     };
     r.onsuccess = () => res(r.result);
     r.onerror = () => rej(r.error);
@@ -37,6 +38,10 @@ export const store = {
   deletePhoto: id => run(['photos','originals','previews'], 'readwrite', t => {
     t.objectStore('photos').delete(id); t.objectStore('originals').delete(id); t.objectStore('previews').delete(id);
   }),
+  allDocs: () => run('docs', 'readonly', t => t.objectStore('docs').getAll()),
+  getDoc: id => run('docs', 'readonly', t => t.objectStore('docs').get(id)),
+  putDoc: d => run('docs', 'readwrite', t => t.objectStore('docs').put(d)),
+  deleteDoc: id => run('docs', 'readwrite', t => t.objectStore('docs').delete(id)),
   getMeta: k => run('meta', 'readonly', t => t.objectStore('meta').get(k)),
   setMeta: (k, v) => run('meta', 'readwrite', t => t.objectStore('meta').put(v, k)),
 };

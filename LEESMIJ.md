@@ -25,3 +25,12 @@ Alleen de app-code is openbaar. Je foto's worden nooit geüpload.
 - Lichtbak bewaart een kopie van je foto's in de browseropslag van het apparaat. Als je de app verwijdert of de sitegegevens van Chrome wist, ben je die kopieën en je bewerkingen kwijt. Exporteer foto's die je wilt houden.
 - Een update zet je online door de gewijzigde bestanden opnieuw te uploaden. De app haalt de nieuwe versie op de achtergrond binnen. Je ziet hem de keer daarna dat je de app opent.
 - HEIC-foto's kunnen niet worden geopend. Gebruik JPG, PNG of WebP.
+
+## Bijwerken naar een nieuwe versie
+
+Ga in je repository naar **Add file → Upload files**, sleep alle bestanden uit de nieuwe zip erin en klik **Commit changes**. Bestaande bestanden worden vervangen. Je foto's en documenten op je apparaten blijven gewoon staan. Open de app daarna twee keer, of druk op de pc op Ctrl+F5.
+
+## Werkruimtes
+
+- **Ontwikkelen**: tik in de bibliotheek op een foto. Hier vind je licht, kleur, curves, HSL, maskers, presets, bijsnijden en watermerk.
+- **Bewerken (lagen)**: kies in Ontwikkelen ⋯ → *Openen in Bewerken*, of in de bibliotheek **Nieuw → Nieuw leeg document**. Hier vind je lagen, laagmaskers, overvloeimodi, selecties (rechthoek, ellips, lasso, toverstaf), penseel, gum, kloonstempel, vlekverwijderaar, emmer, verloop, tekstlagen, pipet en transformeren. Exporteren kan als PNG met transparantie.

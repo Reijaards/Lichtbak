@@ -23,7 +23,12 @@
     <div class="actions">
       <button id="installBtn" class="btn" hidden>Installeren</button>
       <button id="selectBtn" class="btn">Selecteren</button>
-      <button id="importBtn" class="btn primary"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>Foto's</span></button>
+      <button id="importBtn" class="btn primary"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>Nieuw</span></button>
+    </div>
+    <div class="menu" id="addMenu" hidden>
+      <button data-add="photos">Foto's toevoegen</button>
+      <button data-add="blank">Nieuw leeg document (lagen)</button>
+      <button data-add="sample">Voorbeeldfoto toevoegen</button>
     </div>
   </header>
   <div class="lib-scroll" id="libScroll">
@@ -72,6 +77,8 @@
       <button data-act="copy">Instellingen kopiëren…</button>
       <button data-act="paste">Instellingen plakken</button>
       <hr>
+      <button data-act="layers">Openen in Bewerken (lagen)</button>
+      <hr>
       <button data-act="reset" class="danger-text">Alle bewerkingen herstellen</button>
     </div>
   </header>
@@ -96,6 +103,27 @@
       <nav class="tools" id="tools" aria-label="Gereedschappen"></nav>
     </aside>
   </div>
+</section>
+
+<section id="bewerk" class="view" hidden>
+  <header class="top ed-top">
+    <button class="btn icon ghost" id="bwBack" aria-label="Terug naar bibliotheek"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="ed-title"><span id="bwName"></span><span id="bwSize" class="muted"></span></div>
+    <div class="actions">
+      <button class="btn icon ghost" id="bwUndo" aria-label="Ongedaan maken"><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg></button>
+      <button class="btn icon ghost" id="bwRedo" aria-label="Opnieuw"><svg viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h3"/></svg></button>
+      <button class="btn ghost small zoombtn" id="bwZoom" title="Tik: 100% of passend">100%</button>
+      <button class="btn icon ghost wide-only" id="bwFit" aria-label="Passend in beeld"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+      <button class="btn icon ghost" id="bwMore" aria-label="Documentopties"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg></button>
+      <button class="btn primary" id="bwExport"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span class="wide-only">Exporteren</span></button>
+    </div>
+  </header>
+  <div class="bw-main">
+    <nav class="bw-tools" id="bwTools" aria-label="Gereedschappen"></nav>
+    <div class="bw-stage" id="bwStage" data-tool="brush"><canvas id="bwView"></canvas></div>
+    <aside class="side bw-side" id="bwSide"></aside>
+  </div>
+  <input type="color" id="bwColorIn" class="sr" tabindex="-1" aria-hidden="true">
 </section>
 
 <div class="dlg" id="dlg" hidden><div class="card" id="dlgCard" role="dialog" aria-modal="true"></div></div>

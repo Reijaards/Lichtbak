@@ -2,6 +2,7 @@
 import {store} from './store.js';
 import * as E from './engine.js';
 import {makeSample} from './sample.js';
+import {setupBewerk} from './bewerk.js';
 
 const $ = s => document.querySelector(s);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
@@ -23,7 +24,7 @@ async function decode(blob){
 const free = b => { try { b && b.close && b.close(); } catch(_){} };
 
 /* ================= state ================= */
-let photos = [];
+let photos = [], docs = [], BW = null;
 const thumbUrls = new Map();
 let selecting = false; const selected = new Set();
 let userPresets = [], clipboard = null, defaultText = null;
@@ -60,7 +61,7 @@ function groupChecks(defaults){
 function getWR(){ if(!WR) WR = new E.Renderer(document.createElement('canvas'), true); return WR; }
 
 /* ================= library ================= */
-async function loadLibrary(){ photos = (await store.allPhotos()).sort((a, b) => b.added - a.added); renderGrid(); }
+async function loadLibrary(){ photos = (await store.allPhotos()).sort((a, b) => b.added - a.added); docs = await store.allDocs().catch(() => []); renderGrid(); }
 function thumbURL(p){
   let u = thumbUrls.get(p.id);
   if(!u || u.blob !== p.thumb){ if(u) URL.revokeObjectURL(u.url); u = {blob:p.thumb, url:URL.createObjectURL(p.thumb)}; thumbUrls.set(p.id, u); }
@@ -69,22 +70,26 @@ function thumbURL(p){
 function renderGrid(){
   const grid = $('#grid'); grid.innerHTML = '';
   $('#libScroll').classList.toggle('selecting', selecting);
-  photos.forEach(p => {
-    const b = el(`<button class="tile" aria-pressed="${selected.has(p.id)}"><img alt="" loading="lazy"><span class="check"></span>${E.isEdited(p.edit) ? '<span class="dot" title="Bewerkt"></span>' : ''}</button>`);
+  const items = [...docs.map(d => ({...d, isDoc:true, t:d.updated || d.added})), ...photos.map(p => ({p, t:p.added}))].sort((a, b) => b.t - a.t);
+  items.forEach(it => {
+    const isDoc = !!it.isDoc, p = isDoc ? it : it.p;
+    const badge = isDoc ? `<span class="kind"><svg viewBox="0 0 24 24"><path d="M12 3 2 8l10 5 10-5z"/><path d="m2 13 10 5 10-5"/></svg>${p.layers.length} lagen</span>` : (E.isEdited(p.edit) ? '<span class="dot" title="Bewerkt"></span>' : '');
+    const b = el(`<button class="tile" aria-pressed="${selected.has(p.id)}"><img alt="" loading="lazy"><span class="check"></span>${badge}</button>`);
     b.querySelector('img').src = thumbURL(p); b.setAttribute('aria-label', p.name);
     let lp = 0, longed = false;
     b.addEventListener('pointerdown', () => { longed = false; lp = setTimeout(() => { longed = true; if(!selecting) setSelecting(true); toggleSel(p.id); }, 480); });
     ['pointerup','pointerleave','pointercancel'].forEach(ev => b.addEventListener(ev, () => clearTimeout(lp)));
     b.addEventListener('contextmenu', e => e.preventDefault());
-    b.onclick = () => { if(longed) return; selecting ? toggleSel(p.id) : openEditor(p.id); };
+    b.onclick = () => { if(longed) return; selecting ? toggleSel(p.id) : isDoc ? BW.open(p.id) : openEditor(p.id); };
     b.dataset.id = p.id; grid.append(b);
   });
-  $('#empty').hidden = photos.length > 0;
-  $('#selectBtn').hidden = photos.length === 0;
+  const total = photos.length + docs.length;
+  $('#empty').hidden = total > 0;
+  $('#selectBtn').hidden = total === 0;
   const edited = photos.filter(p => E.isEdited(p.edit)).length;
   const meta = $('#libMeta');
-  meta.textContent = photos.length ? `${photos.length} foto${photos.length === 1 ? '' : "'s"} · ${edited} bewerkt` : '';
-  if(photos.length && navigator.storage?.estimate) navigator.storage.estimate().then(s => { meta.textContent += ` · ${(s.usage/1048576).toFixed(0)} MB op dit apparaat`; }).catch(() => {});
+  meta.textContent = total ? `${photos.length} foto${photos.length === 1 ? '' : "'s"} · ${edited} bewerkt${docs.length ? ` · ${docs.length} document${docs.length === 1 ? '' : 'en'} met lagen` : ''}` : '';
+  if(total && navigator.storage?.estimate) navigator.storage.estimate().then(s => { meta.textContent += ` · ${(s.usage/1048576).toFixed(0)} MB op dit apparaat`; }).catch(() => {});
   updSelbar();
 }
 function setSelecting(v){ selecting = v; if(!v) selected.clear(); $('#selectBtn').textContent = v ? 'Annuleren' : 'Selecteren'; renderGrid(); }
@@ -125,6 +130,13 @@ async function importFiles(list){
   if(failed) toast(`${done.length} toegevoegd. ${failed} bestand${failed === 1 ? '' : 'en'} kon${failed === 1 ? '' : 'den'} niet worden geopend (HEIC wordt niet ondersteund).`, 5000);
   else toast(`${done.length} foto${done.length === 1 ? '' : "'s"} toegevoegd`);
   return done;
+}
+
+/* ================= views ================= */
+function showView(v){
+  ['library','editor','bewerk'].forEach(n => $('#' + n).hidden = n !== v);
+  $('#menu').hidden = true; $('#addMenu').hidden = true;
+  if(v === 'bewerk') history.pushState({bewerk:true}, '');
 }
 
 /* ================= editor: open / close ================= */
@@ -173,6 +185,7 @@ async function closeEditor(){
 }
 window.addEventListener('popstate', () => {
   if(!$('#dlg').hidden && !$('#dlg').dataset.busy){ $('#dlg').hidden = true; if(!$('#editor').hidden) history.pushState({editor:true}, ''); return; }
+  if(!$('#bewerk').hidden){ BW.close(); return; }
   if(!$('#editor').hidden) closeEditor();
 });
 $('#backBtn').onclick = () => history.state && history.state.editor ? history.back() : closeEditor();
@@ -827,6 +840,14 @@ $('#menu').onclick = async e => {
   if(a === 'prev') step(-1); if(a === 'next') step(1);
   if(a === 'copy') copyDlg();
   if(a === 'paste' && clipboard){ E.applyGroups(ed, clipboard.data); commit(); syncAll(); requestRender(); toast('Instellingen geplakt'); }
+  if(a === 'layers'){
+    toast('Openen in Bewerken…', 0);
+    await leavePhoto();
+    const rec = cur, c = await renderPhoto(rec, window.innerWidth >= 900 ? 4096 : 3072);
+    cur = null; ed = null; free(prevBmp); prevBmp = null;
+    await BW.newFromCanvas(c, rec.name); toast('Geopend als document met lagen. Je originele foto blijft ongewijzigd.', 3500);
+    return;
+  }
   if(a === 'reset'){ ed = E.defaultEdit(); activeMask = -1; commit(); syncAll(); requestRender(); toast('Alle bewerkingen hersteld. Ongedaan maken kan nog.'); }
 };
 function copyDlg(){
@@ -841,7 +862,19 @@ function copyDlg(){
 }
 
 /* ================= export ================= */
+async function renderPhoto(rec, maxLong){
+  const e = rec === cur && ed ? E.clone(ed) : E.normalizeEdit(E.clone(rec.edit || E.defaultEdit()));
+  let bmp; try { bmp = await decode(await store.getOriginal(rec.id)); } catch(_){ bmp = await decode(await store.getPreview(rec.id)); }
+  const c = await E.renderToCanvas(getWR(), bmp, e, maxLong || Infinity); free(bmp); return c;
+}
 async function exportRecord(rec, opts){
+  if(rec.layers){
+    let c = await BW.flattenRecord(rec);
+    if(opts.fmt === 'jpeg'){ const t = document.createElement('canvas'); t.width = c.width; t.height = c.height; const x = t.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, t.width, t.height); x.drawImage(c, 0, 0); c = t; }
+    if(opts.size && Math.max(c.width, c.height) > opts.size) c = scaleCanvas(c, opts.size);
+    const blob = await toBlob(c, 'image/' + opts.fmt, opts.q), ext = opts.fmt === 'jpeg' ? 'jpg' : opts.fmt;
+    return new File([blob], ((opts.name || rec.name).replace(/[\\/:*?"<>|]/g, '-')) + '.' + ext, {type:blob.type});
+  }
   const e = rec === cur && ed ? E.clone(ed) : E.normalizeEdit(E.clone(rec.edit || E.defaultEdit()));
   let bmp;
   try { bmp = await decode(await store.getOriginal(rec.id)); } catch(_){ bmp = await decode(await store.getPreview(rec.id)); }
@@ -854,6 +887,19 @@ async function exportRecord(rec, opts){
   return new File([blob], nm, {type:blob.type});
 }
 let orientedKeyWR = '';
+function saveOrShare(files){
+  dialog((card, close) => {
+    const mb = (files.reduce((s, f) => s + f.size, 0)/1048576).toFixed(1);
+    card.append(el(`<h2>Klaar om op te slaan</h2>`), el(`<p class="hint">${files.length} bestand${files.length === 1 ? '' : 'en'}, ${mb} MB.</p>`));
+    const acts = el('<div class="dactions"></div>');
+    const saveB = el('<button class="btn">Opslaan op apparaat</button>'), shareB = el('<button class="btn primary">Delen…</button>'), doneB = el('<button class="btn">Sluiten</button>');
+    saveB.onclick = async () => { for(const f of files){ download(f); await new Promise(r => setTimeout(r, 350)); } toast(files.length === 1 ? 'Opgeslagen in je downloads' : `${files.length} bestanden opgeslagen in je downloads`); close(); };
+    shareB.onclick = async () => { try { await navigator.share({files}); close(); } catch(err){ if(err.name !== 'AbortError') toast('Delen is niet gelukt. Kies Opslaan op apparaat.'); } };
+    doneB.onclick = close;
+    acts.append(doneB, saveB); if(navigator.canShare && navigator.canShare({files})) acts.append(shareB); else saveB.classList.add('primary');
+    card.append(acts);
+  });
+}
 function download(file){ const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = file.name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000); }
 function openExport(recs){
   const single = recs.length === 1, rec = recs[0];
@@ -871,7 +917,8 @@ function openExport(recs){
     card.append(fmt, qs, size); if(single) card.append(name); card.append(prog, status, acts);
     const upd = () => {
       qs.hidden = fmt.querySelector('select').value === 'png';
-      if(single){ const e = rec === cur ? ed : E.normalizeEdit(E.clone(rec.edit || E.defaultEdit())); const [W, H] = E.orientedSize(rec.w, rec.h, e.geo); let w = W*e.geo.crop.w, h = H*e.geo.crop.h; const m = +size.querySelector('select').value; if(m){ const s = Math.min(1, m/Math.max(w, h)); w *= s; h *= s; } size.querySelector('.info').textContent = `${Math.round(w)} × ${Math.round(h)} px`; }
+      if(single && rec.layers){ size.querySelector('.info').textContent = `${rec.w} × ${rec.h} px`; }
+      else if(single){ const e = rec === cur ? ed : E.normalizeEdit(E.clone(rec.edit || E.defaultEdit())); const [W, H] = E.orientedSize(rec.w, rec.h, e.geo); let w = W*e.geo.crop.w, h = H*e.geo.crop.h; const m = +size.querySelector('select').value; if(m){ const s = Math.min(1, m/Math.max(w, h)); w *= s; h *= s; } size.querySelector('.info').textContent = `${Math.round(w)} × ${Math.round(h)} px`; }
     };
     fmt.querySelector('select').onchange = upd; size.querySelector('select').onchange = upd; upd();
     acts.children[0].onclick = close;
@@ -906,7 +953,12 @@ $('#exportBtn').onclick = () => { if(cur) openExport([cur]); };
 
 /* ================= library actions ================= */
 const fileIn = $('#fileIn');
-$('#importBtn').onclick = () => fileIn.click();
+$('#importBtn').onclick = e => { e.stopPropagation(); const m = $('#addMenu'); m.hidden = !m.hidden; };
+document.addEventListener('pointerdown', e => { const m = $('#addMenu'); if(!m.hidden && !m.contains(e.target) && !e.target.closest('#importBtn')) m.hidden = true; });
+$('#addMenu').onclick = e => { const a = e.target.dataset.add; if(!a) return; $('#addMenu').hidden = true;
+  if(a === 'photos') fileIn.click();
+  if(a === 'blank') BW.newBlankDlg();
+  if(a === 'sample') $('#sampleBtn').click(); };
 $('#emptyImport').onclick = () => fileIn.click();
 fileIn.onchange = async () => { const f = [...fileIn.files]; fileIn.value = ''; const done = await importFiles(f); if(done.length === 1) openEditor(done[0].id); };
 $('#sampleBtn').onclick = async () => { const b = await toBlob(makeSample(), 'image/jpeg', .93); const rec = await importOne(b, 'voorbeeldfoto'); await loadLibrary(); openEditor(rec.id); };
@@ -916,10 +968,10 @@ $('#selAll').onclick = () => { if(selected.size === photos.length) selected.clea
 $('#selDelete').onclick = async () => {
   const n = selected.size;
   if(!await confirmDlg(`${n} foto${n === 1 ? '' : "'s"} verwijderen?`, 'Ze worden uit Lichtbak verwijderd, samen met de bewerkingen. Dit kan niet ongedaan worden gemaakt. De originelen in je galerij of op je pc blijven gewoon bestaan.', 'Verwijderen')) return;
-  for(const id of selected){ await store.deletePhoto(id); const u = thumbUrls.get(id); if(u){ URL.revokeObjectURL(u.url); thumbUrls.delete(id); } }
+  for(const id of selected){ if(docs.some(d => d.id === id)) await store.deleteDoc(id); else await store.deletePhoto(id); const u = thumbUrls.get(id); if(u){ URL.revokeObjectURL(u.url); thumbUrls.delete(id); } }
   selected.clear(); setSelecting(false); await loadLibrary(); toast(`${n} verwijderd`);
 };
-$('#selExport').onclick = () => openExport(photos.filter(p => selected.has(p.id)));
+$('#selExport').onclick = () => openExport([...photos, ...docs].filter(p => selected.has(p.id)));
 $('#selPaste').onclick = () => { if(clipboard) batchApply(clipboard.data, 'Instellingen geplakt'); };
 $('#selPreset').onclick = () => dialog((card, close) => {
   card.append(el(`<h2>Preset toepassen op ${selected.size} foto${selected.size === 1 ? '' : "'s"}</h2>`));
@@ -930,6 +982,7 @@ $('#selPreset').onclick = () => dialog((card, close) => {
 });
 async function batchApply(part, msg){
   const recs = photos.filter(p => selected.has(p.id)); let i = 0;
+  if(!recs.length){ toast('Presets en instellingen werken op foto\'s, niet op documenten met lagen.'); return; }
   for(const rec of recs){
     toast(`Bezig… ${++i} van ${recs.length}`, 0);
     const e = E.normalizeEdit(E.clone(rec.edit || E.defaultEdit())); E.applyGroups(e, part); rec.edit = e;
@@ -997,6 +1050,9 @@ async function init(){
   clipboard = (await store.getMeta('clipboard')) || null;
   defaultText = (await store.getMeta('defaultText')) || null;
   buildEditorUI();
+  BW = setupBewerk({store, E, toast, dialog, confirmDlg, el, uid, toBlob, decode, free, showView,
+    reloadLibrary:loadLibrary, saveOrShare, photos:() => photos, thumbURL, renderPhoto,
+    importBlob:async (b, name) => { const r = await importOne(b, name); await loadLibrary(); return r; }});
   await loadLibrary();
   await checkInbox();
 }
